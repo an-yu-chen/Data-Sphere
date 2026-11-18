@@ -4,213 +4,593 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Interactive research visualisations exploring gender, scientific knowledge and green innovation.">
-  <title>Gender, Scientific Knowledge & Green Innovation</title>
-  <link rel="stylesheet" href="style.css">
+
+  <title>Gender, Scientific Knowledge and Green Innovation</title>
+
+  <meta name="description"
+    content="Interactive research visualisations and econometric analysis
+    exploring gender representation and scientific knowledge sourcing
+    across 466,310 green patents, 1976–2020.">
+
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <style>
+    :root {
+      --ink: #172b3a;
+      --muted: #637486;
+      --accent: #176b68;
+      --accent-light: #e8f3f1;
+      --paper: #ffffff;
+      --background: #f4f7f8;
+      --border: #e1e8eb;
+      --dark: #102b38;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--background);
+      line-height: 1.7;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      width: min(1120px, 90%);
+      margin: auto;
+    }
+
+    header {
+      background: var(--dark);
+      color: white;
+      padding: 72px 0 65px;
+    }
+
+    .eyebrow {
+      color: #a8d5cc;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1.15;
+      max-width: 850px;
+      margin-bottom: 20px;
+    }
+
+    .subtitle {
+      font-size: 19px;
+      color: #d2e0e5;
+      max-width: 760px;
+      margin-bottom: 30px;
+    }
+
+    .header-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-links a {
+      display: inline-block;
+      padding: 11px 18px;
+      border: 1px solid #91b9bb;
+      border-radius: 7px;
+      color: white;
+      font-size: 14px;
+    }
+
+    .header-links a.primary {
+      background: #d8eeea;
+      color: #153f40;
+      border-color: #d8eeea;
+    }
+
+    section {
+      padding: 58px 0;
+    }
+
+    .section-heading {
+      font-size: 27px;
+      margin-bottom: 12px;
+      color: var(--dark);
+    }
+
+    .section-intro {
+      max-width: 780px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: -30px;
+      position: relative;
+    }
+
+    .metric {
+      background: white;
+      padding: 23px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 29px;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+
+    .metric span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    h3 {
+      color: var(--dark);
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-bottom: 13px;
+    }
+
+    .source-card {
+      border-top: 3px solid var(--accent);
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 4px 9px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .chart-container {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      min-height: 370px;
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 12px;
+    }
+
+    .equation {
+      background: #f1f5f6;
+      border-radius: 8px;
+      padding: 18px;
+      margin: 15px 0;
+      overflow-x: auto;
+      font-family: Georgia, serif;
+      font-size: 17px;
+    }
+
+    pre {
+      background: #102b38;
+      color: #e4f1f1;
+      padding: 20px;
+      border-radius: 9px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.65;
+      margin: 15px 0;
+    }
+
+    code {
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    ul {
+      padding-left: 21px;
+      margin: 10px 0 15px;
+    }
+
+    li {
+      margin-bottom: 7px;
+    }
+
+    .method-note {
+      background: #fff8e9;
+      border-left: 4px solid #c58c32;
+      padding: 17px;
+      border-radius: 5px;
+      color: #614d2e;
+      font-size: 14px;
+      margin-top: 18px;
+    }
+
+    .footer {
+      background: var(--dark);
+      color: #d2e0e5;
+      padding: 35px 0;
+      font-size: 13px;
+    }
+
+    .footer a {
+      color: #a8d5cc;
+    }
+
+    @media (max-width: 800px) {
+      .metrics,
+      .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .metrics,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        padding: 48px 0;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<header class="hero">
+<header>
   <div class="container">
-    <p class="eyebrow">RESEARCH PROJECT · 1976–2020</p>
-    <h1>Gender, Scientific Knowledge<br>and Green Innovation</h1>
-    <p class="hero-intro">
-      Interactive research visualisations exploring gender representation,
-      scientific knowledge sourcing and knowledge connections across
-      466,310 green patents.
+    <div class="eyebrow">Interactive Research Visualisations</div>
+
+    <h1>Gender, Scientific Knowledge and Green Innovation</h1>
+
+    <p class="subtitle">
+      Exploring gender representation, scientific knowledge sourcing
+      and innovation characteristics across 466,310 green patents
+      from 1976 to 2020.
     </p>
-    <p class="hero-note">
-      Descriptive evidence · Data exploration · Knowledge network analysis
-    </p>
+
+    <div class="header-links">
+      <a class="primary" href="#visualisations">
+        Explore the research
+      </a>
+
+      <a href="YOUR_GITHUB_REPOSITORY_URL" target="_blank"
+         rel="noopener noreferrer">
+        View Python code on GitHub
+      </a>
+
+      <a href="#methodology">
+        Research methodology
+      </a>
+    </div>
   </div>
 </header>
 
-<nav class="navigation">
-  <div class="container nav-inner">
-    <a href="#overview">Overview</a>
-    <a href="#visualisations">Visualisations</a>
-    <a href="#networks">Knowledge networks</a>
-    <a href="#methods">Python methods</a>
-    <a href="#architecture">Data architecture</a>
-  </div>
-</nav>
+<main>
 
-<main class="container">
+  <div class="container">
+    <div class="metrics">
 
-<section id="overview" class="section">
-  <p class="eyebrow">01 / RESEARCH OVERVIEW</p>
-  <h2>Exploring the relationship between gender, science and innovation</h2>
-  <p class="section-intro">
-    This project examines patterns of inventor gender representation,
-    scientific knowledge sourcing and innovation characteristics in a
-    dataset of 466,310 green patents granted between 1976 and 2020.
-  </p>
+      <div class="metric">
+        <strong>466,310</strong>
+        <span>Green patent observations</span>
+      </div>
 
-  <div class="metrics">
-    <article class="metric-card">
-      <span class="metric-value">466,310</span>
-      <span class="metric-label">Green patents</span>
-    </article>
-    <article class="metric-card">
-      <span class="metric-value">1976–2020</span>
-      <span class="metric-label">Observation period</span>
-    </article>
-    <article class="metric-card">
-      <span class="metric-value">18.35%</span>
-      <span class="metric-label">Patents with at least one female inventor</span>
-    </article>
-    <article class="metric-card">
-      <span class="metric-value">33.05%</span>
-      <span class="metric-label">Patents using science</span>
-    </article>
-  </div>
+      <div class="metric">
+        <strong>1976–2020</strong>
+        <span>Research period</span>
+      </div>
 
-  <div class="notice">
-    <strong>Research note:</strong> The indicators above are descriptive
-    statistics from the supplied annual analysis. They are not causal
-    estimates.
-  </div>
-</section>
+      <div class="metric">
+        <strong>18.35%</strong>
+        <span>Patents involving at least one female inventor</span>
+      </div>
 
-<section id="visualisations" class="section">
-  <p class="eyebrow">02 / INTERACTIVE DATA VISUALISATIONS</p>
-  <h2>Patterns and trends over time</h2>
-  <p class="section-intro">
-    Load the annual CSV outputs generated by the Python workflow to explore
-    changes in patenting, inventor composition and scientific knowledge sourcing.
-  </p>
+      <div class="metric">
+        <strong>33.05%</strong>
+        <span>Patents using scientific knowledge</span>
+      </div>
 
-  <div class="upload-panel">
-    <label for="patentFile">Annual patent indicators CSV</label>
-    <input type="file" id="patentFile" accept=".csv">
-    <label for="scienceFile">Annual science indicators CSV</label>
-    <input type="file" id="scienceFile" accept=".csv">
-    <p id="uploadStatus" class="small muted">
-      Select the two annual CSV files to load the visualisations.
-    </p>
-  </div>
-
-  <div class="chart-grid">
-    <article class="chart-card wide">
-      <h3>Green patenting activity</h3>
-      <p>Annual number of patents</p>
-      <div id="patentChart" class="chart"></div>
-    </article>
-
-    <article class="chart-card">
-      <h3>Female inventor representation</h3>
-      <p>Share of patents with at least one female inventor</p>
-      <div id="femaleChart" class="chart"></div>
-    </article>
-
-    <article class="chart-card">
-      <h3>Scientific knowledge sourcing</h3>
-      <p>Share of patents using science</p>
-      <div id="scienceChart" class="chart"></div>
-    </article>
-
-    <article class="chart-card wide">
-      <h3>Inventor gender composition</h3>
-      <p>Mean inventor gender ratios by patent year</p>
-      <div id="genderChart" class="chart"></div>
-    </article>
-
-    <article class="chart-card">
-      <h3>Average team size</h3>
-      <p>Mean number of inventors per patent</p>
-      <div id="teamChart" class="chart"></div>
-    </article>
-
-    <article class="chart-card">
-      <h3>Originality and generality</h3>
-      <p>Annual mean innovation indicators</p>
-      <div id="innovationChart" class="chart"></div>
-    </article>
-
-    <article class="chart-card wide">
-      <h3>Gender composition of cited scientific knowledge</h3>
-      <p>Female- and male-authored science shares among science-using patents</p>
-      <div id="scienceGenderChart" class="chart"></div>
-    </article>
-  </div>
-</section>
-
-<section id="networks" class="section">
-  <p class="eyebrow">03 / KNOWLEDGE NETWORK ANALYSIS</p>
-  <h2>Mapping connections between patents and scientific publications</h2>
-  <p class="section-intro">
-    Patent–publication relationships can be represented as a bipartite
-    knowledge network. This makes it possible to explore how technological
-    inventions connect to scientific knowledge sources.
-  </p>
-
-  <div class="notice">
-    <strong>Network definition:</strong> Patent nodes and scientific publication
-    nodes are distinct. An edge represents a recorded patent–publication link.
-    The visualisation below uses the edge list you upload; it does not invent
-    connections or imply that the network has already been empirically analysed.
-  </div>
-
-  <div class="upload-panel">
-    <label for="networkFile">Patent–publication edge list CSV</label>
-    <input type="file" id="networkFile" accept=".csv">
-    <p class="small muted">
-      Required columns: <code>source</code>, <code>target</code>.
-      Optional column: <code>weight</code>.
-    </p>
-    <p id="networkStatus" class="small muted">No network data loaded.</p>
-  </div>
-
-  <div class="network-metrics">
-    <article class="metric-card">
-      <span class="metric-value" id="nodeCount">—</span>
-      <span class="metric-label">Nodes</span>
-    </article>
-    <article class="metric-card">
-      <span class="metric-value" id="edgeCount">—</span>
-      <span class="metric-label">Links</span>
-    </article>
-    <article class="metric-card">
-      <span class="metric-value" id="patentNodes">—</span>
-      <span class="metric-label">Patent nodes</span>
-    </article>
-    <article class="metric-card">
-      <span class="metric-value" id="paperNodes">—</span>
-      <span class="metric-label">Publication nodes</span>
-    </article>
-  </div>
-
-  <div class="chart-card">
-    <h3>Interactive patent–publication network</h3>
-    <p>Drag nodes to explore the structure. Hover over nodes for identifiers and degree.</p>
-    <div id="networkGraph" class="network-graph">
-      <p class="muted">Upload an edge-list CSV to display the network.</p>
     </div>
   </div>
 
-  <div class="chart-card">
-    <h3>Most connected nodes</h3>
-    <p>Ranked by degree, the number of observed connections.</p>
-    <div id="centralityTable" class="table-wrap">
-      <p class="muted">Network statistics will appear after loading data.</p>
+  <section id="overview">
+    <div class="container">
+
+      <h2 class="section-heading">Research Overview</h2>
+
+      <p class="section-intro">
+        This project investigates the relationship between the gender
+        composition of inventor teams and the scientific knowledge
+        underpinning green technological innovation.
+      </p>
+
+      <div class="card">
+        <p>
+          Combining large-scale patent data, scientific publication
+          linkages, gender-related indicators and econometric analysis,
+          the research examines how gender representation and scientific
+          knowledge sourcing evolve over time.
+        </p>
+
+        <p>
+          The interactive research visualisations connect descriptive
+          evidence with statistical analysis, allowing users to explore
+          longitudinal patterns, compare indicators and interpret
+          econometric results.
+        </p>
+
+        <p>
+          The project focuses on four questions:
+        </p>
+
+        <ul>
+          <li>How has green patenting activity changed over time?</li>
+          <li>How is gender represented in green inventor teams?</li>
+          <li>How does inventor gender composition relate to scientific
+              knowledge sourcing?</li>
+          <li>How do these relationships vary with patent and
+              technological characteristics?</li>
+        </ul>
+      </div>
+
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="methods" class="section">
-  <p class="eyebrow">04 / PYTHON METHODS AND CODE DEMONSTRATIONS</p>
-  <h2>From raw data to analytical outputs</h2>
-  <p class="section-intro">
-    The data processing and analytical workflow is implemented in Python.
-    The website is the presentation layer; statistical analysis and network
-    construction take place in the research workflow.
-  </p>
+  <section id="visualisations">
+    <div class="container">
 
-  <div class="code-card">
-    <h3>Data loading and inspection</h3>
-    <pre><code>import pandas as pd
+      <h2 class="section-heading">Selected Research Evidence</h2>
+
+      <p class="section-intro">
+        The following chart compares reported indicators at the beginning
+        and end of the study period. It presents the observed endpoints,
+        not interpolated annual values.
+      </p>
+
+      <div class="chart-container">
+        <div id="trendChart"></div>
+      </div>
+
+      <p class="note">
+        Source: Research team's annual aggregation of the green patent
+        analytical dataset. Values are percentages. Female science share
+        refers to the annual measure of female-authored scientific
+        knowledge among science-using patents.
+      </p>
+
+    </div>
+  </section>
+
+  <section id="data">
+    <div class="container">
+
+      <h2 class="section-heading">Data Sources</h2>
+
+      <p class="section-intro">
+        The research integrates three principal data sources, each
+        contributing a distinct part of the empirical analysis.
+      </p>
+
+      <div class="grid-3">
+
+        <div class="card source-card">
+          <div class="tag">Patent records</div>
+
+          <h3>PatentsView</h3>
+
+          <p>
+            Provides U.S. patent records, disambiguated inventor
+            information and inventor gender attribution.
+          </p>
+
+          <p>
+            Green patents are identified using the Cooperative Patent
+            Classification Y02/Y04S tagging scheme.
+          </p>
+
+          <a href="https://patentsview.org/"
+             target="_blank" rel="noopener noreferrer">
+            Visit PatentsView →
+          </a>
+        </div>
+
+        <div class="card source-card">
+          <div class="tag">Patent–science links</div>
+
+          <h3>Reliance on Science</h3>
+
+          <p>
+            The dataset developed by Marx and Fuegi (2020, 2022)
+            provides information on citations from U.S. patents
+            to scientific publications.
+          </p>
+
+          <p>
+            These links support the analysis of scientific knowledge
+            sourcing in green technological innovation.
+          </p>
+        </div>
+
+        <div class="card source-card">
+          <div class="tag">Scientific publications</div>
+
+          <h3>SciSciNet</h3>
+
+          <p>
+            Provides scientific publication and author information
+            used to investigate the gender composition of cited
+            scientific knowledge.
+          </p>
+
+          <p>
+            Author gender is estimated using probabilistic,
+            name-based attribution methods.
+          </p>
+
+          <a href="https://sciscinet.com/"
+             target="_blank" rel="noopener noreferrer">
+            Visit SciSciNet →
+          </a>
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3>Gender attribution and classification</h3>
+
+        <p>
+          Inventor gender information is based on PatentsView's
+          disambiguated inventor data and the Worldwide Gender-Name
+          Dictionary (WGND) 2.0, developed by WIPO.
+        </p>
+
+        <p>
+          Scientific author gender is examined using probabilistic
+          name-based methods described by Lin et al. (2023) and
+          Van Buskirk et al. (2023). Different probability thresholds
+          are compared, and the results are assessed against
+          classifications produced using the Python
+          <code>gender-guesser</code> package.
+        </p>
+
+        <p class="note">
+          Name-based gender attribution is an estimate and should not
+          be interpreted as direct evidence of an individual's
+          self-identified gender.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="methodology">
+    <div class="container">
+
+      <h2 class="section-heading">Analytical and Econometric Methods</h2>
+
+      <p class="section-intro">
+        The project combines descriptive statistics, longitudinal
+        analysis, patent–publication linkage analysis and binary-response
+        econometric modelling.
+      </p>
+
+      <div class="card">
+
+        <h3>Selection equation</h3>
+
+        <div class="equation">
+          Sᵢ* = Zᵢ′γ + uᵢ
+          <br><br>
+          Sᵢ = 1[Sᵢ* &gt; 0]
+        </div>
+
+        <p>
+          The selection component examines the probability of meeting
+          the research sample's known scientific knowledge gender
+          information criterion, as operationalised in the dataset.
+        </p>
+
+        <h3>Scientific knowledge outcome equation</h3>
+
+        <div class="equation">
+          Fᵢ* = Xᵢ′β + εᵢ
+          <br><br>
+          Fᵢ = 1[Fᵢ* &gt; 0], observed when Sᵢ = 1
+        </div>
+
+        <p>
+          The outcome component examines whether a patent's associated
+          scientific knowledge includes female-authored publications.
+          The research considers inventor gender composition, patent
+          year, team size, originality and technological field.
+        </p>
+
+        <p>
+          The binary selection and outcome equations are represented
+          separately here to explain the research question. The final
+          estimator must reflect the selection assumptions and account
+          for dependence between the two processes.
+        </p>
+
+        <div class="method-note">
+          The previously generated two-stage Probit and inverse Mills
+          ratio estimates are exploratory outputs. A validated binary
+          sample-selection estimator, appropriate uncertainty estimates
+          and defensible identification assumptions are required before
+          presenting these as final inferential results.
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="code">
+    <div class="container">
+
+      <h2 class="section-heading">Python Implementation</h2>
+
+      <p class="section-intro">
+        Selected code examples demonstrate how the research data are
+        prepared, indicators are constructed and statistical models
+        are estimated.
+      </p>
+
+      <div class="card">
+
+        <h3>1. Loading the patent dataset</h3>
+
+        <pre><code>import pandas as pd
+import numpy as np
 
 patents = pd.read_csv(
     "genderpatent_with_gender_ratios.csv",
@@ -218,127 +598,240 @@ patents = pd.read_csv(
 )
 
 print(patents.shape)
-print(patents.info())
-print(patents.isna().sum())</code></pre>
-  </div>
+print(patents.info())</code></pre>
 
-  <div class="code-card">
-    <h3>Annual descriptive indicators</h3>
-    <pre><code>yearly = (
-    patents.groupby("YearOfPatentGrant")
-    .agg(
-        patent_count=("patent_id", "count"),
-        mean_female_ratio=("female_ratio", "mean"),
-        mean_male_ratio=("male_ratio", "mean"),
-        average_team_size=("team_size", "mean"),
-        science_using_patents=("Uses_Science", "sum")
-    )
-    .reset_index()
-)
+        <h3>2. Constructing annual indicators</h3>
 
-yearly.to_csv(
-    "yearly_patent_indicators.csv",
-    index=False
-)</code></pre>
-  </div>
+        <pre><code>annual = patents.groupby("YearOfPatentGrant").agg(
+    patent_count=("patent_id", "nunique"),
+    female_inventor_share=(
+        "female_ratio",
+        lambda x: (x > 0).mean()
+    ),
+    science_use_share=("Uses_Science", "mean")
+).reset_index()</code></pre>
 
-  <div class="code-card">
-    <h3>Constructing a knowledge network</h3>
-    <pre><code>import pandas as pd
-import networkx as nx
+        <h3>3. Illustrative Probit estimation</h3>
 
-links = pd.read_stata("_patent_paper_pairs.dta")
+        <pre><code>import statsmodels.api as sm
 
-edges = (
-    links[["patent", "paperid"]]
-    .drop_duplicates()
-    .rename(columns={
-        "patent": "source",
-        "paperid": "target"
-    })
-)
+variables = [
+    "male_ratio",
+    "YearOfPatentGrant",
+    "team_size",
+    "Originality",
+    "CPC_4digit"
+]
 
-edges["weight"] = 1
+X = sm.add_constant(patents[variables])
+y = patents["Uses_Science"].astype(int)
 
-G = nx.Graph()
+model = sm.Probit(y, X, missing="drop")
+results = model.fit()
 
-for _, row in edges.iterrows():
-    G.add_node(row["source"], bipartite="patent")
-    G.add_node(row["target"], bipartite="publication")
-    G.add_edge(
-        row["source"],
-        row["target"],
-        weight=row["weight"]
-    )
+print(results.summary())
+print(results.get_margeff().summary())</code></pre>
 
-degree = dict(G.degree())</code></pre>
-  </div>
+        <p class="note">
+          These are selected illustrative extracts, not the complete
+          research code. The full analysis requires the relevant
+          data-linkage steps, variable definitions, technology controls
+          and validated sample-selection specification.
+        </p>
 
-  <div class="notice">
-    These are illustrative workflow examples. The final analytical scripts
-    should include identifier validation, namespace separation, missing-data
-    checks, reproducible variable definitions and documented network boundaries.
-  </div>
-</section>
+      </div>
 
-<section id="architecture" class="section">
-  <p class="eyebrow">05 / DATA ARCHITECTURE</p>
-  <h2>How the research data pipeline is organised</h2>
-  <p class="section-intro">
-    A modular architecture separates source data, data preparation,
-    analytical processing and interactive presentation.
-  </p>
-
-  <div class="architecture">
-    <div class="architecture-step">
-      <span>01</span>
-      <div><strong>Source data</strong><p>Patent-level observations and patent–publication linkage records.</p></div>
     </div>
-    <div class="architecture-arrow">↓</div>
-    <div class="architecture-step">
-      <span>02</span>
-      <div><strong>Data preparation</strong><p>Cleaning, validation, identifier standardisation and variable construction using Python and Pandas.</p></div>
-    </div>
-    <div class="architecture-arrow">↓</div>
-    <div class="architecture-step">
-      <span>03</span>
-      <div><strong>Analytical processing</strong><p>Annual indicators, gender measures, science-sourcing measures and network construction using NetworkX.</p></div>
-    </div>
-    <div class="architecture-arrow">↓</div>
-    <div class="architecture-step">
-      <span>04</span>
-      <div><strong>Structured outputs</strong><p>CSV tables for annual indicators and patent–publication network edges.</p></div>
-    </div>
-    <div class="architecture-arrow">↓</div>
-    <div class="architecture-step">
-      <span>05</span>
-      <div><strong>Interactive presentation</strong><p>JavaScript, Plotly.js and D3.js for interactive charts and network exploration.</p></div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section class="section final-note">
-  <h2>Research scope and interpretation</h2>
-  <p>
-    The annual indicators are descriptive and do not establish causal effects.
-    The patent–publication network represents knowledge linkages, not
-    necessarily interpersonal social relationships. Network statistics
-    depend on the selected nodes, edges, weights and projection methods.
-  </p>
-  <p class="muted small">
-    Research materials should be shared in accordance with author permissions,
-    data licences and applicable confidentiality requirements.
-  </p>
-</section>
+  <section id="technology">
+    <div class="container">
+
+      <h2 class="section-heading">Tools and Technologies</h2>
+
+      <div class="grid-2">
+
+        <div class="card">
+          <h3>Data and statistical analysis</h3>
+          <ul>
+            <li>Python</li>
+            <li>Pandas and NumPy</li>
+            <li>Statsmodels</li>
+            <li>SciPy</li>
+            <li>Pyreadstat</li>
+            <li>NetworkX</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Visualisation and development</h3>
+          <ul>
+            <li>Plotly and Plotly.js</li>
+            <li>HTML, CSS and JavaScript</li>
+            <li>Jupyter Notebooks</li>
+            <li>Git and GitHub</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="creative-economy">
+    <div class="container">
+
+      <h2 class="section-heading">
+        Relevance to the Creative Economy
+      </h2>
+
+      <div class="card">
+
+        <p>
+          Although the empirical application focuses on green
+          technological innovation rather than creative industries
+          directly, the analytical approach has wider relevance to
+          creative economy research.
+        </p>
+
+        <p>
+          The project demonstrates how multiple data sources can
+          be integrated to examine knowledge production, participation,
+          gender representation and innovation outcomes.
+        </p>
+
+        <p>
+          These methods may be transferable to research on publishing,
+          film, music, design, architecture, software and other
+          knowledge-intensive creative activities.
+        </p>
+
+        <p>
+          The combination of indicator construction, econometric
+          analysis and interactive visualisation can support more
+          accessible and evidence-based understanding of the economic
+          and social contributions of creative activities.
+        </p>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="research">
+    <div class="container">
+
+      <h2 class="section-heading">Research Context</h2>
+
+      <div class="card">
+
+        <h3>Scientific Knowledge Sourcing in Green Innovation:
+          The Influence of Inventor Gender and Firm Green
+          Technological Orientation</h3>
+
+        <p>
+          An Yu Chen, Cornelia Lawson and Silvia Massini
+        </p>
+
+        <p>
+          Alliance Manchester Business School<br>
+          Manchester Institute of Innovation Research<br>
+          University of Manchester
+        </p>
+
+        <p class="note">
+          The underlying research manuscript is confidential.
+          Publicly shared material is limited to content authorised
+          by the authors.
+        </p>
+
+      </div>
+
+    </div>
+  </section>
 
 </main>
 
-<footer>
+<footer class="footer">
   <div class="container">
-    <p>Gender, Scientific Knowledge and Green Innovation · Research visualisations</p>
+
+    <p>
+      Gender, Scientific Knowledge and Green Innovation
+    </p>
+
+    <p>
+      Interactive Research Visualisations and Econometric Analysis
+    </p>
+
+    <p>
+      Research materials and code are shared subject to applicable
+      data-provider terms and research permissions.
+    </p>
+
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script>
+  const years = ["1976", "2020"];
+
+  const chartData = [
+    {
+      x: years,
+      y: [3.5879, 24.1871],
+      name: "Patents with at least one female inventor",
+      type: "bar"
+    },
+    {
+      x: years,
+      y: [13.0328, 35.3644],
+      name: "Patents using scientific knowledge",
+      type: "bar"
+    },
+    {
+      x: years,
+      y: [1.6847, 8.8464],
+      name: "Female science share among science-using patents",
+      type: "bar"
+    }
+  ];
+
+  const layout = {
+    title: {
+      text: "Selected indicators: 1976 and 2020",
+      font: { size: 18 }
+    },
+    barmode: "group",
+    yaxis: {
+      title: "Percentage (%)",
+      rangemode: "tozero"
+    },
+    xaxis: {
+      title: "Year"
+    },
+    legend: {
+      orientation: "h",
+      y: -0.28
+    },
+    margin: {
+      l: 60,
+      r: 25,
+      t: 65,
+      b: 115
+    },
+    paper_bgcolor: "#ffffff",
+    plot_bgcolor: "#ffffff"
+  };
+
+  Plotly.newPlot(
+    "trendChart",
+    chartData,
+    layout,
+    {
+      responsive: true,
+      displayModeBar: true
+    }
+  );
+</script>
+
 </body>
 </html>
