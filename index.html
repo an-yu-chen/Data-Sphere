@@ -1,837 +1,240 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <title>Gender, Scientific Knowledge and Green Innovation</title>
+<title>Interactive Data Visualisations</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root{--ink:#182b35;--muted:#647782;--line:#dce5e8;--paper:#ffffff;--card:#fff;--teal:#172D50;--blue:#457b9d;--gold:#d59b36;--rose:#b75d68}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:#FFFFFF;color:#263449;padding:38px max(22px,calc((100vw - 1180px)/2)) 32px;
+  border-bottom: 5px solid #F2C94C;}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#F2C94C;font-weight:700}
+h1{font-size:clamp(27px,4vw,43px);line-height:1.12;max-width:850px;margin:12px 0}
+header p{max-width:760px;color:#263449;margin:12px 0 0;font-size:16px}
+main{max-width:1180px;margin:28px auto;padding:0 20px 56px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:15px;box-shadow:0 3px 14px #18343b0a}
+.kpi{padding:18px 20px}.kpi .value{font-size:30px;font-weight:750;letter-spacing:-.04em}.kpi .label{color:var(--muted);font-size:13px;margin-top:3px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 14px}
+button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:9px 15px;font:600 13px inherit;cursor:pointer}
+button.active{background:#15343b;color:#fff;border-color:#15343b}
+.panel{padding:20px;margin-bottom:16px}.panel h2{font-size:19px;margin:0 0 4px}.sub{color:var(--muted);font-size:13px;margin:0 0 10px}
+.chart{width:100%;height:360px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.note{background:#FFFFFF;border-left:3px solid var(--teal);padding:13px 16px;border-radius:8px;color:#263449;font-size:13px;margin:16px 0}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+select{border:1px solid var(--line);border-radius:8px;background:#fff;padding:9px 12px;color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:right;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}th:first-child,td:first-child{text-align:left}th{color:var(--muted);font-weight:650}
+.tablewrap{overflow:auto;max-height:360px}.hidden{display:none}
+footer{color:var(--muted);font-size:12px;padding:10px 2px}
+@media(max-width:800px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.chart{height:310px}}
+@media(max-width:420px){.kpis{grid-template-columns:1fr 1fr}.kpi .value{font-size:24px}}
 
-  <meta name="description"
-    content="Interactive research visualisations and econometric analysis
-    exploring gender representation and scientific knowledge sourcing
-    across 466,310 green patents, 1976–2020.">
 
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-
-  <style>
-    :root {
-      --ink: #172b3a;
-      --muted: #637486;
-      --accent: #176b68;
-      --accent-light: #e8f3f1;
-      --paper: #ffffff;
-      --background: #f4f7f8;
-      --border: #e1e8eb;
-      --dark: #102b38;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Inter, Arial, sans-serif;
-      color: var(--ink);
-      background: var(--background);
-      line-height: 1.7;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      width: min(1120px, 90%);
-      margin: auto;
-    }
-
-    header {
-      background: var(--dark);
-      color: white;
-      padding: 72px 0 65px;
-    }
-
-    .eyebrow {
-      color: #a8d5cc;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      font-size: clamp(34px, 5vw, 54px);
-      line-height: 1.15;
-      max-width: 850px;
-      margin-bottom: 20px;
-    }
-
-    .subtitle {
-      font-size: 19px;
-      color: #d2e0e5;
-      max-width: 760px;
-      margin-bottom: 30px;
-    }
-
-    .header-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .header-links a {
-      display: inline-block;
-      padding: 11px 18px;
-      border: 1px solid #91b9bb;
-      border-radius: 7px;
-      color: white;
-      font-size: 14px;
-    }
-
-    .header-links a.primary {
-      background: #d8eeea;
-      color: #153f40;
-      border-color: #d8eeea;
-    }
-
-    section {
-      padding: 58px 0;
-    }
-
-    .section-heading {
-      font-size: 27px;
-      margin-bottom: 12px;
-      color: var(--dark);
-    }
-
-    .section-intro {
-      max-width: 780px;
-      color: var(--muted);
-      margin-bottom: 28px;
-    }
-
-    .card {
-      background: var(--paper);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 25px;
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-top: -30px;
-      position: relative;
-    }
-
-    .metric {
-      background: white;
-      padding: 23px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
-    .metric strong {
-      display: block;
-      font-size: 29px;
-      color: var(--accent);
-      margin-bottom: 5px;
-    }
-
-    .metric span {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    h3 {
-      color: var(--dark);
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    p {
-      margin-bottom: 13px;
-    }
-
-    .source-card {
-      border-top: 3px solid var(--accent);
-    }
-
-    .tag {
-      display: inline-block;
-      background: var(--accent-light);
-      color: var(--accent);
-      padding: 4px 9px;
-      border-radius: 5px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .chart-container {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px;
-      min-height: 370px;
-    }
-
-    .note {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 12px;
-    }
-
-    .equation {
-      background: #f1f5f6;
-      border-radius: 8px;
-      padding: 18px;
-      margin: 15px 0;
-      overflow-x: auto;
-      font-family: Georgia, serif;
-      font-size: 17px;
-    }
-
-    pre {
-      background: #102b38;
-      color: #e4f1f1;
-      padding: 20px;
-      border-radius: 9px;
-      overflow-x: auto;
-      font-size: 13px;
-      line-height: 1.65;
-      margin: 15px 0;
-    }
-
-    code {
-      font-family: Consolas, Monaco, monospace;
-    }
-
-    ul {
-      padding-left: 21px;
-      margin: 10px 0 15px;
-    }
-
-    li {
-      margin-bottom: 7px;
-    }
-
-    .method-note {
-      background: #fff8e9;
-      border-left: 4px solid #c58c32;
-      padding: 17px;
-      border-radius: 5px;
-      color: #614d2e;
-      font-size: 14px;
-      margin-top: 18px;
-    }
-
-    .footer {
-      background: var(--dark);
-      color: #d2e0e5;
-      padding: 35px 0;
-      font-size: 13px;
-    }
-
-    .footer a {
-      color: #a8d5cc;
-    }
-
-    @media (max-width: 800px) {
-      .metrics,
-      .grid-3 {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .metrics,
-      .grid-3 {
-        grid-template-columns: 1fr;
-      }
-
-      header {
-        padding: 48px 0;
-      }
-    }
-  </style>
+</style>
 </head>
-
 <body>
-
 <header>
-  <div class="container">
-    <div class="eyebrow">Interactive Research Visualisations</div>
-
-    <h1>Gender, Scientific Knowledge and Green Innovation</h1>
-
-    <p class="subtitle">
-      Exploring gender representation, scientific knowledge sourcing
-      and innovation characteristics across 466,310 green patents
-      from 1976 to 2020.
-    </p>
-
-    <div class="header-links">
-      <a class="primary" href="#visualisations">
-        Explore the research
-      </a>
-
-      <a href="YOUR_GITHUB_REPOSITORY_URL" target="_blank"
-         rel="noopener noreferrer">
-        View Python code on GitHub
-      </a>
-
-      <a href="#methodology">
-        Research methodology
-      </a>
-    </div>
-  </div>
+<div class="eyebrow">An Yu Chen</div>
+<h1>Interactive Data Sphere: Gender, Scientific Knowledge, and Green Innovation</h1>
+<p>The work is relevant to researchers in innovation studies, gender and technology, science policy and economics, as well as policymakers, who are seeking to understand gender inequality in innovation systems.</p>
 </header>
-
 <main>
+<section class="welcome">
+  <div class="panel">
+    <h2>Welcome to Data Sphere</h2>
 
-  <div class="container">
-    <div class="metrics">
+    <p>This project is drawn from part of my PhD thesis, which investigates whether the gender composition of patent inventor teams influences the gender of the scientific researchers whose publications they cite.
 
-      <div class="metric">
-        <strong>466,310</strong>
-        <span>Green patent observations</span>
-      </div>
+    This study draws on open-access secondary data sources covering patent records, patent–science linkages, and scientific publications. PatentsView supplies U.S. patent records, disambiguated inventor identities, and inventor gender information.  Inventor gender is inferred using the World Gender-Name Dictionary (WGND) 2.0, developed by the World Intellectual Property Organization (WIPO). Green patents are classified according to the Cooperative Patent Classification (CPC) Y02/Y04S tagging scheme.
 
-      <div class="metric">
-        <strong>1976–2020</strong>
-        <span>Research period</span>
-      </div>
+    To examine the scientific foundations of green technological innovation, the study uses the dataset developed by Marx and Fuegi (2020, 2022), which captures citations from U.S. patents to scientific publications.
 
-      <div class="metric">
-        <strong>18.35%</strong>
-        <span>Patents involving at least one female inventor</span>
-      </div>
+    In addition, SciSciNet (Lin et al., 2023) provides publication-level and author-level information for analysing the gender composition of the scientific knowledge referenced in patents. Author gender is inferred through probabilistic, name-based attribution methods.
 
-      <div class="metric">
-        <strong>33.05%</strong>
-        <span>Patents using scientific knowledge</span>
-      </div>
+   The patent data cover the period from 1976 to 2020, together with linked information on patent citations to scientific publications.
 
-    </div>
-  </div>
+   <p>
+     The accompanying GitHub repository provides further information
+     on the research design, Python-based data processing and
+     analytical workflow underlying this project.
+   </p>
 
-  <section id="overview">
-    <div class="container">
-
-      <h2 class="section-heading">Research Overview</h2>
-
-      <p class="section-intro">
-        This project investigates the relationship between the gender
-        composition of inventor teams and the scientific knowledge
-        underpinning green technological innovation.
-      </p>
-
-      <div class="card">
-        <p>
-          Combining large-scale patent data, scientific publication
-          linkages, gender-related indicators and econometric analysis,
-          the research examines how gender representation and scientific
-          knowledge sourcing evolve over time.
-        </p>
-
-        <p>
-          The interactive research visualisations connect descriptive
-          evidence with statistical analysis, allowing users to explore
-          longitudinal patterns, compare indicators and interpret
-          econometric results.
-        </p>
-
-        <p>
-          The project focuses on four questions:
-        </p>
-
-        <ul>
-          <li>How has green patenting activity changed over time?</li>
-          <li>How is gender represented in green inventor teams?</li>
-          <li>How does inventor gender composition relate to scientific
-              knowledge sourcing?</li>
-          <li>How do these relationships vary with patent and
-              technological characteristics?</li>
-        </ul>
-      </div>
-
-    </div>
-  </section>
-
-  <section id="visualisations">
-    <div class="container">
-
-      <h2 class="section-heading">Selected Research Evidence</h2>
-
-      <p class="section-intro">
-        The following chart compares reported indicators at the beginning
-        and end of the study period. It presents the observed endpoints,
-        not interpolated annual values.
-      </p>
-
-      <div class="chart-container">
-        <div id="trendChart"></div>
-      </div>
-
-      <p class="note">
-        Source: Research team's annual aggregation of the green patent
-        analytical dataset. Values are percentages. Female science share
-        refers to the annual measure of female-authored scientific
-        knowledge among science-using patents.
-      </p>
-
-    </div>
-  </section>
-
-  <section id="data">
-    <div class="container">
-
-      <h2 class="section-heading">Data Sources</h2>
-
-      <p class="section-intro">
-        The research integrates three principal data sources, each
-        contributing a distinct part of the empirical analysis.
-      </p>
-
-      <div class="grid-3">
-
-        <div class="card source-card">
-          <div class="tag">Patent records</div>
-
-          <h3>PatentsView</h3>
-
-          <p>
-            Provides U.S. patent records, disambiguated inventor
-            information and inventor gender attribution.
-          </p>
-
-          <p>
-            Green patents are identified using the Cooperative Patent
-            Classification Y02/Y04S tagging scheme.
-          </p>
-
-          <a href="https://patentsview.org/"
-             target="_blank" rel="noopener noreferrer">
-            Visit PatentsView →
-          </a>
-        </div>
-
-        <div class="card source-card">
-          <div class="tag">Patent–science links</div>
-
-          <h3>Reliance on Science</h3>
-
-          <p>
-            The dataset developed by Marx and Fuegi (2020, 2022)
-            provides information on citations from U.S. patents
-            to scientific publications.
-          </p>
-
-          <p>
-            These links support the analysis of scientific knowledge
-            sourcing in green technological innovation.
-          </p>
-        </div>
-
-        <div class="card source-card">
-          <div class="tag">Scientific publications</div>
-
-          <h3>SciSciNet</h3>
-
-          <p>
-            Provides scientific publication and author information
-            used to investigate the gender composition of cited
-            scientific knowledge.
-          </p>
-
-          <p>
-            Author gender is estimated using probabilistic,
-            name-based attribution methods.
-          </p>
-
-          <a href="https://sciscinet.com/"
-             target="_blank" rel="noopener noreferrer">
-            Visit SciSciNet →
-          </a>
-        </div>
-
-      </div>
-
-      <div class="card" style="margin-top:20px">
-        <h3>Gender attribution and classification</h3>
-
-        <p>
-          Inventor gender information is based on PatentsView's
-          disambiguated inventor data and the Worldwide Gender-Name
-          Dictionary (WGND) 2.0, developed by WIPO.
-        </p>
-
-        <p>
-          Scientific author gender is examined using probabilistic
-          name-based methods described by Lin et al. (2023) and
-          Van Buskirk et al. (2023). Different probability thresholds
-          are compared, and the results are assessed against
-          classifications produced using the Python
-          <code>gender-guesser</code> package.
-        </p>
-
-        <p class="note">
-          Name-based gender attribution is an estimate and should not
-          be interpreted as direct evidence of an individual's
-          self-identified gender.
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <section id="methodology">
-    <div class="container">
-
-      <h2 class="section-heading">Analytical and Econometric Methods</h2>
-
-      <p class="section-intro">
-        The project combines descriptive statistics, longitudinal
-        analysis, patent–publication linkage analysis and binary-response
-        econometric modelling.
-      </p>
-
-      <div class="card">
-
-        <h3>Selection equation</h3>
-
-        <div class="equation">
-          Sᵢ* = Zᵢ′γ + uᵢ
-          <br><br>
-          Sᵢ = 1[Sᵢ* &gt; 0]
-        </div>
-
-        <p>
-          The selection component examines the probability of meeting
-          the research sample's known scientific knowledge gender
-          information criterion, as operationalised in the dataset.
-        </p>
-
-        <h3>Scientific knowledge outcome equation</h3>
-
-        <div class="equation">
-          Fᵢ* = Xᵢ′β + εᵢ
-          <br><br>
-          Fᵢ = 1[Fᵢ* &gt; 0], observed when Sᵢ = 1
-        </div>
-
-        <p>
-          The outcome component examines whether a patent's associated
-          scientific knowledge includes female-authored publications.
-          The research considers inventor gender composition, patent
-          year, team size, originality and technological field.
-        </p>
-
-        <p>
-          The binary selection and outcome equations are represented
-          separately here to explain the research question. The final
-          estimator must reflect the selection assumptions and account
-          for dependence between the two processes.
-        </p>
-
-        <div class="method-note">
-          The previously generated two-stage Probit and inverse Mills
-          ratio estimates are exploratory outputs. A validated binary
-          sample-selection estimator, appropriate uncertainty estimates
-          and defensible identification assumptions are required before
-          presenting these as final inferential results.
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <section id="code">
-    <div class="container">
-
-      <h2 class="section-heading">Python Implementation</h2>
-
-      <p class="section-intro">
-        Selected code examples demonstrate how the research data are
-        prepared, indicators are constructed and statistical models
-        are estimated.
-      </p>
-
-      <div class="card">
-
-        <h3>1. Loading the patent dataset</h3>
-
-        <pre><code>import pandas as pd
-import numpy as np
-
-patents = pd.read_csv(
-    "genderpatent_with_gender_ratios.csv",
-    dtype={"patent_id": str}
-)
-
-print(patents.shape)
-print(patents.info())</code></pre>
-
-        <h3>2. Constructing annual indicators</h3>
-
-        <pre><code>annual = patents.groupby("YearOfPatentGrant").agg(
-    patent_count=("patent_id", "nunique"),
-    female_inventor_share=(
-        "female_ratio",
-        lambda x: (x > 0).mean()
-    ),
-    science_use_share=("Uses_Science", "mean")
-).reset_index()</code></pre>
-
-        <h3>3. Illustrative Probit estimation</h3>
-
-        <pre><code>import statsmodels.api as sm
-
-variables = [
-    "male_ratio",
-    "YearOfPatentGrant",
-    "team_size",
-    "Originality",
-    "CPC_4digit"
-]
-
-X = sm.add_constant(patents[variables])
-y = patents["Uses_Science"].astype(int)
-
-model = sm.Probit(y, X, missing="drop")
-results = model.fit()
-
-print(results.summary())
-print(results.get_margeff().summary())</code></pre>
-
-        <p class="note">
-          These are selected illustrative extracts, not the complete
-          research code. The full analysis requires the relevant
-          data-linkage steps, variable definitions, technology controls
-          and validated sample-selection specification.
-        </p>
-
-      </div>
-
-    </div>
-  </section>
-
-  <section id="technology">
-    <div class="container">
-
-      <h2 class="section-heading">Tools and Technologies</h2>
-
-      <div class="grid-2">
-
-        <div class="card">
-          <h3>Data and statistical analysis</h3>
-          <ul>
-            <li>Python</li>
-            <li>Pandas and NumPy</li>
-            <li>Statsmodels</li>
-            <li>SciPy</li>
-            <li>Pyreadstat</li>
-            <li>NetworkX</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3>Visualisation and development</h3>
-          <ul>
-            <li>Plotly and Plotly.js</li>
-            <li>HTML, CSS and JavaScript</li>
-            <li>Jupyter Notebooks</li>
-            <li>Git and GitHub</li>
-          </ul>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <section id="creative-economy">
-    <div class="container">
-
-      <h2 class="section-heading">
-        Relevance to the Creative Economy
-      </h2>
-
-      <div class="card">
-
-        <p>
-          Although the empirical application focuses on green
-          technological innovation rather than creative industries
-          directly, the analytical approach has wider relevance to
-          creative economy research.
-        </p>
-
-        <p>
-          The project demonstrates how multiple data sources can
-          be integrated to examine knowledge production, participation,
-          gender representation and innovation outcomes.
-        </p>
-
-        <p>
-          These methods may be transferable to research on publishing,
-          film, music, design, architecture, software and other
-          knowledge-intensive creative activities.
-        </p>
-
-        <p>
-          The combination of indicator construction, econometric
-          analysis and interactive visualisation can support more
-          accessible and evidence-based understanding of the economic
-          and social contributions of creative activities.
-        </p>
-
-      </div>
-
-    </div>
-  </section>
-
-  <section id="research">
-    <div class="container">
-
-      <h2 class="section-heading">Research Context</h2>
-
-      <div class="card">
-
-        <h3>Scientific Knowledge Sourcing in Green Innovation:
-          The Influence of Inventor Gender and Firm Green
-          Technological Orientation</h3>
-
-        <p>
-          An Yu Chen, Cornelia Lawson and Silvia Massini
-        </p>
-
-        <p>
-          Alliance Manchester Business School<br>
-          Manchester Institute of Innovation Research<br>
-          University of Manchester
-        </p>
-
-        <p class="note">
-          The underlying research manuscript is confidential.
-          Publicly shared material is limited to content authorised
-          by the authors.
-        </p>
-
-      </div>
-
-    </div>
-  </section>
-
-</main>
-
-<footer class="footer">
-  <div class="container">
-
-    <p>
-      Gender, Scientific Knowledge and Green Innovation
-    </p>
-
-    <p>
-      Interactive Research Visualisations and Econometric Analysis
-    </p>
-
-    <p>
-      Research materials and code are shared subject to applicable
-      data-provider terms and research permissions.
-    </p>
+   <div class="header-actions">
+     <a href="https://github.com/an-yu-chen/Data-Sphere"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="github-button">
+       View Python code on GitHub ↗
+     </a>
+   </div>
 
   </div>
+</section>
+
+<div class="tabs">
+<button class="active" data-tab="regression">Regression results</button>
+<button data-tab="overview">Patent overview</button>
+<button data-tab="gender">Gender trends</button>
+<button data-tab="science">Science linkages</button>
+<button data-tab="characteristics">Innovation characteristics</button>
+<button data-tab="data">Data table</button>
+</div>
+<section id="overview" class="tabcontent hidden">
+ <div class="panel"><h2>Green patenting over time</h2><p class="sub">Annual number of patents in the dataset. Select or hover to inspect a year.</p><div id="patentVolume" class="chart"></div></div>
+ <div class="grid2">
+  <div class="panel"><h2>Female inventor presence</h2><p class="sub">Share of patents with at least one female inventor.</p><div id="femaleShare" class="chart"></div></div>
+  <div class="panel"><h2>Patents using science</h2><p class="sub">Share of patents with Uses_Science = 1.</p><div id="scienceShare" class="chart"></div></div>
+ </div>
+</section>
+<section id="gender" class="tabcontent hidden">
+ <div class="panel"><h2>Inventor gender composition</h2><p class="sub">Mean inventor shares by patent year. Gender categories are shown as recorded in the source dataset.</p><div id="genderComposition" class="chart"></div></div>
+ <div class="panel"><h2>Female inventor presence by year</h2><p class="sub">A patent is counted here if its female_ratio is greater than zero.</p><div id="femaleCounts" class="chart"></div></div>
+</section>
+<section id="science" class="tabcontent hidden">
+ <div class="panel"><h2>Scientific knowledge sourcing</h2><p class="sub">Annual count of science-using patents and mean female/male shares in cited scientific publications for that subset.</p><div id="scienceCount" class="chart"></div></div>
+ <div class="panel"><h2>Gender composition of cited science</h2><p class="sub">Mean female- and male-authored science shares, among patents with Uses_Science = 1.</p><div id="scienceGender" class="chart"></div></div>
+</section>
+<section id="characteristics" class="tabcontent hidden">
+ <div class="grid2">
+  <div class="panel"><h2>Average team size</h2><p class="sub">Mean number of inventors per patent.</p><div id="teamSize" class="chart"></div></div>
+  <div class="panel"><h2>Originality and generality</h2><p class="sub">Annual mean indicators, as supplied in the dataset.</p><div id="originality" class="chart"></div></div>
+  <p class="sub">
+  Note: Originality captures the diversity of technological fields
+  represented in backward citations, while generality reflects the
+  technological breadth of forward citations. Both range from 0 to 1,
+  with higher values indicating greater technological diversity.
+  Generality is not defined for patents without forward citations
+  (Trajtenberg et al., 1997; Hall et al., 2001;
+  Squicciarini et al., 2013).
+</p>
+ </div>
+ <div class="panel"><h2>Forward citations</h2><p class="sub">Mean forward citations over five- and seven-year windows. Recent cohorts may have shorter observable citation histories depending on source construction.</p><div id="citations" class="chart"></div></div>
+ <p class="sub">
+  Note: Forward citations accumulate over time. Recent patent cohorts
+  have shorter citation observation windows and may therefore have
+  fewer recorded citations. These measures may be affected by
+  right-censoring and should be interpreted with caution.
+</p>
+</section>
+<section id="regression" class="tabcontent">
+ <div class="panel">
+  <h2>Two-stage Probit model: interactive coefficient explorer</h2>
+  <p class="sub">Reported model estimates supplied by the researcher. Choose a stage and whether to view Probit coefficients or average marginal effects. Whiskers show reported 95% confidence intervals.</p>
+  <div class="controls">
+   <label for="regStage">Model stage</label>
+   <select id="regStage"><option value="first">Stage 1 · Selection into known-gender science citations</option><option value="second">Stage 2 · Female-authored science citation</option></select>
+   <label for="regMetric">Estimate</label>
+   <select id="regMetric"><option value="coef">Probit coefficients</option><option value="me">Average marginal effects (dy/dx)</option></select>
+  </div>
+  <div class="grid2">
+   <div class="kpi card"><div class="value" id="regN">400,219</div><div class="label">Observations in selected stage</div></div>
+   <div class="kpi card"><div class="value" id="regR2">0.1861</div><div class="label">Pseudo R-squared</div></div>
+  </div>
+  <div id="regChart" class="chart" style="height:570px"></div>
+  <div class="tablewrap"><table><thead><tr><th>Variable</th><th>Estimate</th><th>Std. error</th><th>p-value</th><th>95% CI</th></tr></thead><tbody id="regRows"></tbody></table></div>
+ </div>
+ <div class="panel">
+  <h2>How to read these estimates</h2>
+  <p>Stage 1 models the probability that a patent is included in the known-gender science-citation sample (N = 400,219; pseudo-R² = 0.1861). Stage 2 models whether the patent has a positive female-authored science share among the selected science-using, known-gender observations (N = 83,352; pseudo-R² = 0.1805).</p>
+  <p><strong>Important methodological qualification.</strong> Stage 2 includes an inverse Mills ratio (IMR) generated from Stage 1. The standard errors displayed here are the conventional Probit output supplied for that second-stage regression; they do not, by themselves, account for uncertainty from estimating the IMR. Treat inferential results as provisional until the selection model is re-estimated with an appropriate joint sample-selection estimator or a bootstrap that repeats both stages. A defensible exclusion restriction should also be justified.</p>
+  <p>Probit coefficients are on the latent-index scale and should not be read as percentage-point changes. Average marginal effects are easier to interpret as approximate changes in predicted probability for a one-unit change in a predictor, holding the model specification fixed. These are associations, not causal effects.</p>
+ </div>
+</section>
+<section id="data" class="tabcontent hidden">
+ <div class="panel"><h2>Annual indicators</h2><p class="sub">Descriptive annual aggregates supplied in the analysis output.</p>
+ <div class="controls"><label for="metric">Indicator</label><select id="metric">
+ <option value="patent_count">Patent count</option><option value="female_inventor_patent_share">Female-inventor patent share</option><option value="science_using_patent_share">Science-using patent share</option><option value="mean_female_ratio">Mean female inventor ratio</option><option value="mean_unknown_gender_ratio">Mean unknown-gender ratio</option><option value="average_team_size">Average team size</option><option value="average_originality">Average originality</option><option value="average_generality">Average generality</option>
+ </select></div>
+ <div class="tablewrap"><table><thead><tr><th>Year</th><th id="metricHead">Patent count</th></tr></thead><tbody id="dataRows"></tbody></table></div>
+ </div>
+</section>
+<div class="panel references">
+  <h2>References</h2>
+
+  <p>Chen, A. Y. (2026). <em>The contribution of scientific knowledge to green technology development: Three essays.</em> Doctoral dissertation, The University of Manchester. University of Manchester Research Explorer: <a href="https://research.manchester.ac.uk/en/studentTheses/the-contribution-of-scientific-knowledge-to-green-technology-deve/" target="_blank">https://research.manchester.ac.uk/en/studentTheses/the-contribution-of-scientific-knowledge-to-green-technology-deve/</a></p>
+  <p>Hall, B. H., Jaffe, A. B., &amp; Trajtenberg, M. (2001). <em>The NBER patent citation data file: Lessons, insights and methodological tools</em> (NBER Working Paper No. 8498). National Bureau of Economic Research.</p>
+
+
+  <p>Lax-Martinez, G., Raffo, J. D., &amp; Saito, K. (2016). Identifying the gender of PCT inventors. <em>World Intellectual Property Organization (WIPO) Economic Research Working Paper Series</em>, (33).</p>
+
+  <p>Lin, Z., Yin, Y., Liu, L., &amp; Wang, D. (2023). SciSciNet: A large-scale open data lake for the science of science research. <em>Scientific Data, 10</em>(1), 315.</p>
+
+  <p>Martinez, G. L., Raffo, J., &amp; Saito, K. (2016). <em>Identifying the gender of PCT inventors</em> (Vol. 33). WIPO.</p>
+
+  <p>Marx, M., &amp; Fuegi, A. (2020). Reliance on science: Worldwide front-page patent citations to scientific articles. <em>Strategic Management Journal, 41</em>(9), 1572–1594.</p>
+
+  <p>Marx, M., &amp; Fuegi, A. (2022). Reliance on science by inventors: Hybrid extraction of in-text patent-to-article citations. <em>Journal of Economics &amp; Management Strategy, 31</em>(2), 369–392.</p>
+
+ <p>Meng, Y. (2016). Collaboration patterns and patenting: Exploring gender distinctions. <em>Research Policy, 45</em>(1), 56–67.</p>
+ <p>Squicciarini, M., Dernis, H., &amp; Criscuolo, C. (2013). <em>Measuring patent quality: Indicators of technological and economic value</em> (OECD Science, Technology and Industry Working Papers, No. 2013/03). OECD Publishing.</p>
+ <p>Trajtenberg, M., Henderson, R., &amp; Jaffe, A. (1997). University versus corporate patents: A window on the basicness of invention. <em>Economics of Innovation and New Technology, 5</em>(1), 19–50.</p>
+ <p>United States Patent and Trademark Office. (n.d.). <em>PatentsView</em>. <a href="https://data.uspto.gov/support/transition-guide/patentsview" target="_blank" rel="noopener noreferrer">https://data.uspto.gov/support/transition-guide/patentsview</a></p>
+ <p>Van Buskirk, I., Clauset, A., &amp; Larremore, D. B. (2023, June). An open-source cultural consensus approach to name-based gender classification. In <em>Proceedings of the International AAAI Conference on Web and Social Media</em> (Vol. 17, pp. 866–877).</p>
+</div>
+<footer>
+  <a href="https://github.com/an-yu-chen/Data-Sphere"
+     target="_blank"
+     rel="noopener noreferrer"
+     class="github-button">
+     View Python code on GitHub
+  </a>
 </footer>
-
+</main>
 <script>
-  const years = ["1976", "2020"];
+const D = {"patents":[{"year":1976,"patent_count":3261,"mean_female_ratio":0.017785,"mean_male_ratio":0.95709,"mean_unknown_gender_ratio":0.025432,"patents_with_female_inventors":117,"patents_with_male_inventors":3200,"average_team_size":1.808341,"science_using_patents":425,"average_originality":0.975306,"average_generality":0.915984,"average_forward_citations_5yr":1.280282,"average_forward_citations_7yr":2.135235,"female_inventor_patent_share":0.035879,"science_using_patent_share":0.130328},{"year":1977,"patent_count":3334,"mean_female_ratio":0.01906,"mean_male_ratio":0.957335,"mean_unknown_gender_ratio":0.023605,"patents_with_female_inventors":130,"patents_with_male_inventors":3271,"average_team_size":1.768146,"science_using_patents":464,"average_originality":0.896184,"average_generality":0.928017,"average_forward_citations_5yr":1.608878,"average_forward_citations_7yr":2.621476,"female_inventor_patent_share":0.038992,"science_using_patent_share":0.139172},{"year":1978,"patent_count":3698,"mean_female_ratio":0.025203,"mean_male_ratio":0.952797,"mean_unknown_gender_ratio":0.02227,"patents_with_female_inventors":178,"patents_with_male_inventors":3623,"average_team_size":1.794754,"science_using_patents":536,"average_originality":0.792462,"average_generality":0.925204,"average_forward_citations_5yr":1.41536,"average_forward_citations_7yr":2.293402,"female_inventor_patent_share":0.048134,"science_using_patent_share":0.144943},{"year":1979,"patent_count":2672,"mean_female_ratio":0.022991,"mean_male_ratio":0.956578,"mean_unknown_gender_ratio":0.020805,"patents_with_female_inventors":130,"patents_with_male_inventors":2628,"average_team_size":1.782934,"science_using_patents":446,"average_originality":0.727875,"average_generality":0.930575,"average_forward_citations_5yr":1.291168,"average_forward_citations_7yr":2.120509,"female_inventor_patent_share":0.048653,"science_using_patent_share":0.166916},{"year":1980,"patent_count":3508,"mean_female_ratio":0.023341,"mean_male_ratio":0.952968,"mean_unknown_gender_ratio":0.021269,"patents_with_female_inventors":162,"patents_with_male_inventors":3435,"average_team_size":1.810148,"science_using_patents":551,"average_originality":0.712908,"average_generality":0.929851,"average_forward_citations_5yr":1.103478,"average_forward_citations_7yr":1.988883,"female_inventor_patent_share":0.04618,"science_using_patent_share":0.15707},{"year":1981,"patent_count":3932,"mean_female_ratio":0.024528,"mean_male_ratio":0.954897,"mean_unknown_gender_ratio":0.020829,"patents_with_female_inventors":176,"patents_with_male_inventors":3857,"average_team_size":1.813835,"science_using_patents":704,"average_originality":0.696495,"average_generality":0.930228,"average_forward_citations_5yr":1.137335,"average_forward_citations_7yr":2.007375,"female_inventor_patent_share":0.044761,"science_using_patent_share":0.179044},{"year":1982,"patent_count":3621,"mean_female_ratio":0.027934,"mean_male_ratio":0.953131,"mean_unknown_gender_ratio":0.018936,"patents_with_female_inventors":205,"patents_with_male_inventors":3554,"average_team_size":1.8343,"science_using_patents":716,"average_originality":0.690123,"average_generality":0.930922,"average_forward_citations_5yr":1.148302,"average_forward_citations_7yr":1.952223,"female_inventor_patent_share":0.056614,"science_using_patent_share":0.197735},{"year":1983,"patent_count":3425,"mean_female_ratio":0.032861,"mean_male_ratio":0.945394,"mean_unknown_gender_ratio":0.021842,"patents_with_female_inventors":195,"patents_with_male_inventors":3332,"average_team_size":1.874453,"science_using_patents":686,"average_originality":0.690681,"average_generality":0.926143,"average_forward_citations_5yr":1.062482,"average_forward_citations_7yr":1.887007,"female_inventor_patent_share":0.056934,"science_using_patent_share":0.200292},{"year":1984,"patent_count":3754,"mean_female_ratio":0.032382,"mean_male_ratio":0.936629,"mean_unknown_gender_ratio":0.030989,"patents_with_female_inventors":239,"patents_with_male_inventors":3652,"average_team_size":1.973895,"science_using_patents":710,"average_originality":0.679029,"average_generality":0.929038,"average_forward_citations_5yr":1.010922,"average_forward_citations_7yr":1.857485,"female_inventor_patent_share":0.063665,"science_using_patent_share":0.189132},{"year":1985,"patent_count":3647,"mean_female_ratio":0.033307,"mean_male_ratio":0.935989,"mean_unknown_gender_ratio":0.030979,"patents_with_female_inventors":260,"patents_with_male_inventors":3558,"average_team_size":2.023581,"science_using_patents":749,"average_originality":0.686237,"average_generality":0.936007,"average_forward_citations_5yr":1.169729,"average_forward_citations_7yr":2.095147,"female_inventor_patent_share":0.071291,"science_using_patent_share":0.205374},{"year":1986,"patent_count":3386,"mean_female_ratio":0.029888,"mean_male_ratio":0.937952,"mean_unknown_gender_ratio":0.032456,"patents_with_female_inventors":218,"patents_with_male_inventors":3300,"average_team_size":2.021559,"science_using_patents":702,"average_originality":0.681258,"average_generality":0.927533,"average_forward_citations_5yr":1.087123,"average_forward_citations_7yr":1.989959,"female_inventor_patent_share":0.064383,"science_using_patent_share":0.207324},{"year":1987,"patent_count":3930,"mean_female_ratio":0.028619,"mean_male_ratio":0.945741,"mean_unknown_gender_ratio":0.02564,"patents_with_female_inventors":247,"patents_with_male_inventors":3855,"average_team_size":2.048092,"science_using_patents":816,"average_originality":0.674861,"average_generality":0.920485,"average_forward_citations_5yr":1.225191,"average_forward_citations_7yr":2.140967,"female_inventor_patent_share":0.06285,"science_using_patent_share":0.207634},{"year":1988,"patent_count":3508,"mean_female_ratio":0.033041,"mean_male_ratio":0.93559,"mean_unknown_gender_ratio":0.03137,"patents_with_female_inventors":257,"patents_with_male_inventors":3427,"average_team_size":2.1374,"science_using_patents":800,"average_originality":0.687789,"average_generality":0.930329,"average_forward_citations_5yr":1.27138,"average_forward_citations_7yr":2.313284,"female_inventor_patent_share":0.073261,"science_using_patent_share":0.22805},{"year":1989,"patent_count":3896,"mean_female_ratio":0.035811,"mean_male_ratio":0.934556,"mean_unknown_gender_ratio":0.029633,"patents_with_female_inventors":306,"patents_with_male_inventors":3794,"average_team_size":2.13578,"science_using_patents":941,"average_originality":0.682709,"average_generality":0.929927,"average_forward_citations_5yr":1.293378,"average_forward_citations_7yr":2.310832,"female_inventor_patent_share":0.078542,"science_using_patent_share":0.24153},{"year":1990,"patent_count":3704,"mean_female_ratio":0.036261,"mean_male_ratio":0.934881,"mean_unknown_gender_ratio":0.028859,"patents_with_female_inventors":292,"patents_with_male_inventors":3625,"average_team_size":2.203564,"science_using_patents":885,"average_originality":0.679554,"average_generality":0.924228,"average_forward_citations_5yr":1.395248,"average_forward_citations_7yr":2.421436,"female_inventor_patent_share":0.078834,"science_using_patent_share":0.238931},{"year":1991,"patent_count":3963,"mean_female_ratio":0.038361,"mean_male_ratio":0.935081,"mean_unknown_gender_ratio":0.026811,"patents_with_female_inventors":319,"patents_with_male_inventors":3867,"average_team_size":2.150391,"science_using_patents":921,"average_originality":0.679901,"average_generality":0.93441,"average_forward_citations_5yr":1.473126,"average_forward_citations_7yr":2.609891,"female_inventor_patent_share":0.080495,"science_using_patent_share":0.2324},{"year":1992,"patent_count":4370,"mean_female_ratio":0.039538,"mean_male_ratio":0.930085,"mean_unknown_gender_ratio":0.030377,"patents_with_female_inventors":374,"patents_with_male_inventors":4247,"average_team_size":2.206178,"science_using_patents":1112,"average_originality":0.694401,"average_generality":0.936442,"average_forward_citations_5yr":1.582151,"average_forward_citations_7yr":2.869565,"female_inventor_patent_share":0.085584,"science_using_patent_share":0.254462},{"year":1993,"patent_count":4692,"mean_female_ratio":0.042655,"mean_male_ratio":0.926713,"mean_unknown_gender_ratio":0.031076,"patents_with_female_inventors":430,"patents_with_male_inventors":4549,"average_team_size":2.224638,"science_using_patents":1191,"average_originality":0.692868,"average_generality":0.941534,"average_forward_citations_5yr":1.537298,"average_forward_citations_7yr":2.938619,"female_inventor_patent_share":0.091645,"science_using_patent_share":0.253836},{"year":1994,"patent_count":4824,"mean_female_ratio":0.04455,"mean_male_ratio":0.923876,"mean_unknown_gender_ratio":0.032092,"patents_with_female_inventors":479,"patents_with_male_inventors":4683,"average_team_size":2.274876,"science_using_patents":1362,"average_originality":0.70442,"average_generality":0.938039,"average_forward_citations_5yr":1.637852,"average_forward_citations_7yr":3.185116,"female_inventor_patent_share":0.099295,"science_using_patent_share":0.282338},{"year":1995,"patent_count":4980,"mean_female_ratio":0.04583,"mean_male_ratio":0.924447,"mean_unknown_gender_ratio":0.030024,"patents_with_female_inventors":541,"patents_with_male_inventors":4850,"average_team_size":2.403414,"science_using_patents":1473,"average_originality":0.708362,"average_generality":0.935183,"average_forward_citations_5yr":1.766064,"average_forward_citations_7yr":3.574699,"female_inventor_patent_share":0.108635,"science_using_patent_share":0.295783},{"year":1996,"patent_count":5502,"mean_female_ratio":0.048299,"mean_male_ratio":0.920519,"mean_unknown_gender_ratio":0.031455,"patents_with_female_inventors":656,"patents_with_male_inventors":5375,"average_team_size":2.435115,"science_using_patents":1710,"average_originality":0.708233,"average_generality":0.937109,"average_forward_citations_5yr":1.968739,"average_forward_citations_7yr":3.969466,"female_inventor_patent_share":0.119229,"science_using_patent_share":0.310796},{"year":1997,"patent_count":5567,"mean_female_ratio":0.056604,"mean_male_ratio":0.913922,"mean_unknown_gender_ratio":0.029474,"patents_with_female_inventors":750,"patents_with_male_inventors":5423,"average_team_size":2.526316,"science_using_patents":1936,"average_originality":0.708969,"average_generality":0.934562,"average_forward_citations_5yr":1.814802,"average_forward_citations_7yr":3.686366,"female_inventor_patent_share":0.134722,"science_using_patent_share":0.347764},{"year":1998,"patent_count":6929,"mean_female_ratio":0.05784,"mean_male_ratio":0.91127,"mean_unknown_gender_ratio":0.030842,"patents_with_female_inventors":957,"patents_with_male_inventors":6717,"average_team_size":2.517968,"science_using_patents":2338,"average_originality":0.709766,"average_generality":0.93305,"average_forward_citations_5yr":1.983114,"average_forward_citations_7yr":3.923654,"female_inventor_patent_share":0.138115,"science_using_patent_share":0.337422},{"year":1999,"patent_count":7077,"mean_female_ratio":0.057828,"mean_male_ratio":0.905796,"mean_unknown_gender_ratio":0.03633,"patents_with_female_inventors":990,"patents_with_male_inventors":6842,"average_team_size":2.54119,"science_using_patents":2391,"average_originality":0.705418,"average_generality":0.928433,"average_forward_citations_5yr":1.888512,"average_forward_citations_7yr":3.71259,"female_inventor_patent_share":0.13989,"science_using_patent_share":0.337855},{"year":2000,"patent_count":7573,"mean_female_ratio":0.059485,"mean_male_ratio":0.9028,"mean_unknown_gender_ratio":0.037704,"patents_with_female_inventors":1100,"patents_with_male_inventors":7345,"average_team_size":2.645451,"science_using_patents":2558,"average_originality":0.711025,"average_generality":0.928006,"average_forward_citations_5yr":1.91813,"average_forward_citations_7yr":3.665654,"female_inventor_patent_share":0.145253,"science_using_patent_share":0.337779},{"year":2001,"patent_count":8278,"mean_female_ratio":0.061513,"mean_male_ratio":0.896523,"mean_unknown_gender_ratio":0.042186,"patents_with_female_inventors":1275,"patents_with_male_inventors":7999,"average_team_size":2.658251,"science_using_patents":2634,"average_originality":0.722399,"average_generality":0.922497,"average_forward_citations_5yr":1.78461,"average_forward_citations_7yr":3.476081,"female_inventor_patent_share":0.154023,"science_using_patent_share":0.318193},{"year":2002,"patent_count":8371,"mean_female_ratio":0.06142,"mean_male_ratio":0.843817,"mean_unknown_gender_ratio":0.037832,"patents_with_female_inventors":1270,"patents_with_male_inventors":7875,"average_team_size":2.673994,"science_using_patents":2610,"average_originality":0.722002,"average_generality":0.909084,"average_forward_citations_5yr":1.479035,"average_forward_citations_7yr":3.033688,"female_inventor_patent_share":0.151714,"science_using_patent_share":0.311791},{"year":2003,"patent_count":8606,"mean_female_ratio":0.059734,"mean_male_ratio":0.865348,"mean_unknown_gender_ratio":0.040867,"patents_with_female_inventors":1355,"patents_with_male_inventors":8214,"average_team_size":2.747269,"science_using_patents":2658,"average_originality":0.72779,"average_generality":0.893013,"average_forward_citations_5yr":1.379503,"average_forward_citations_7yr":2.876249,"female_inventor_patent_share":0.157448,"science_using_patent_share":0.308854},{"year":2004,"patent_count":8328,"mean_female_ratio":0.064627,"mean_male_ratio":0.891184,"mean_unknown_gender_ratio":0.044249,"patents_with_female_inventors":1359,"patents_with_male_inventors":8044,"average_team_size":2.760207,"science_using_patents":2484,"average_originality":0.730691,"average_generality":0.887145,"average_forward_citations_5yr":1.378122,"average_forward_citations_7yr":2.804155,"female_inventor_patent_share":0.163184,"science_using_patent_share":0.298271},{"year":2005,"patent_count":7664,"mean_female_ratio":0.064412,"mean_male_ratio":0.892302,"mean_unknown_gender_ratio":0.04333,"patents_with_female_inventors":1255,"patents_with_male_inventors":7406,"average_team_size":2.738518,"science_using_patents":2441,"average_originality":0.732769,"average_generality":0.87514,"average_forward_citations_5yr":0.930585,"average_forward_citations_7yr":2.258481,"female_inventor_patent_share":0.163753,"science_using_patent_share":0.318502},{"year":2006,"patent_count":9105,"mean_female_ratio":0.064798,"mean_male_ratio":0.88983,"mean_unknown_gender_ratio":0.045613,"patents_with_female_inventors":1547,"patents_with_male_inventors":8821,"average_team_size":2.814937,"science_using_patents":3112,"average_originality":0.729977,"average_generality":0.85316,"average_forward_citations_5yr":0.742669,"average_forward_citations_7yr":2.036463,"female_inventor_patent_share":0.169907,"science_using_patent_share":0.34179},{"year":2007,"patent_count":8566,"mean_female_ratio":0.069203,"mean_male_ratio":0.881023,"mean_unknown_gender_ratio":0.049874,"patents_with_female_inventors":1534,"patents_with_male_inventors":8276,"average_team_size":2.860962,"science_using_patents":2891,"average_originality":0.722161,"average_generality":0.829581,"average_forward_citations_5yr":0.716554,"average_forward_citations_7yr":1.828625,"female_inventor_patent_share":0.17908,"science_using_patent_share":0.337497},{"year":2008,"patent_count":8593,"mean_female_ratio":0.070641,"mean_male_ratio":0.879582,"mean_unknown_gender_ratio":0.049812,"patents_with_female_inventors":1546,"patents_with_male_inventors":8263,"average_team_size":2.794484,"science_using_patents":2997,"average_originality":0.714778,"average_generality":0.816043,"average_forward_citations_5yr":0.695683,"average_forward_citations_7yr":1.794717,"female_inventor_patent_share":0.179914,"science_using_patent_share":0.348772},{"year":2009,"patent_count":9682,"mean_female_ratio":0.07537,"mean_male_ratio":0.868895,"mean_unknown_gender_ratio":0.055805,"patents_with_female_inventors":1850,"patents_with_male_inventors":9286,"average_team_size":2.819046,"science_using_patents":3522,"average_originality":0.712322,"average_generality":0.789665,"average_forward_citations_5yr":0.570647,"average_forward_citations_7yr":1.495042,"female_inventor_patent_share":0.191076,"science_using_patent_share":0.363768},{"year":2010,"patent_count":13664,"mean_female_ratio":0.080069,"mean_male_ratio":0.857953,"mean_unknown_gender_ratio":0.062059,"patents_with_female_inventors":2753,"patents_with_male_inventors":13061,"average_team_size":2.847629,"science_using_patents":4932,"average_originality":0.70264,"average_generality":0.760782,"average_forward_citations_5yr":0.564842,"average_forward_citations_7yr":1.472556,"female_inventor_patent_share":0.201478,"science_using_patent_share":0.360948},{"year":2011,"patent_count":15329,"mean_female_ratio":0.079934,"mean_male_ratio":0.859884,"mean_unknown_gender_ratio":0.060296,"patents_with_female_inventors":3187,"patents_with_male_inventors":14708,"average_team_size":2.862679,"science_using_patents":5649,"average_originality":0.70143,"average_generality":0.735046,"average_forward_citations_5yr":0.717855,"average_forward_citations_7yr":1.724705,"female_inventor_patent_share":0.207907,"science_using_patent_share":0.368517},{"year":2012,"patent_count":18771,"mean_female_ratio":0.077255,"mean_male_ratio":0.863526,"mean_unknown_gender_ratio":0.059329,"patents_with_female_inventors":3793,"patents_with_male_inventors":18015,"average_team_size":2.829791,"science_using_patents":6846,"average_originality":0.688866,"average_generality":0.700657,"average_forward_citations_5yr":0.741303,"average_forward_citations_7yr":1.69016,"female_inventor_patent_share":0.202067,"science_using_patent_share":0.364712},{"year":2013,"patent_count":21138,"mean_female_ratio":0.078631,"mean_male_ratio":0.854353,"mean_unknown_gender_ratio":0.067089,"patents_with_female_inventors":4422,"patents_with_male_inventors":20192,"average_team_size":2.907039,"science_using_patents":7855,"average_originality":0.675656,"average_generality":0.660619,"average_forward_citations_5yr":0.668086,"average_forward_citations_7yr":1.605686,"female_inventor_patent_share":0.209197,"science_using_patent_share":0.371606},{"year":2014,"patent_count":24997,"mean_female_ratio":0.082204,"mean_male_ratio":0.840265,"mean_unknown_gender_ratio":0.077762,"patents_with_female_inventors":5402,"patents_with_male_inventors":23666,"average_team_size":2.924031,"science_using_patents":9335,"average_originality":0.661213,"average_generality":0.617664,"average_forward_citations_5yr":0.596072,"average_forward_citations_7yr":1.4961,"female_inventor_patent_share":0.216106,"science_using_patent_share":0.373445},{"year":2015,"patent_count":27289,"mean_female_ratio":0.084847,"mean_male_ratio":0.832354,"mean_unknown_gender_ratio":0.082983,"patents_with_female_inventors":6139,"patents_with_male_inventors":25818,"average_team_size":2.969218,"science_using_patents":10045,"average_originality":0.636995,"average_generality":0.559044,"average_forward_citations_5yr":0.59163,"average_forward_citations_7yr":1.540914,"female_inventor_patent_share":0.224962,"science_using_patent_share":0.368097},{"year":2016,"patent_count":28663,"mean_female_ratio":0.085934,"mean_male_ratio":0.827053,"mean_unknown_gender_ratio":0.087217,"patents_with_female_inventors":6495,"patents_with_male_inventors":27092,"average_team_size":3.010885,"science_using_patents":10599,"average_originality":0.616193,"average_generality":0.507203,"average_forward_citations_5yr":0.704637,"average_forward_citations_7yr":1.635593,"female_inventor_patent_share":0.226599,"science_using_patent_share":0.36978},{"year":2017,"patent_count":31165,"mean_female_ratio":0.086115,"mean_male_ratio":0.823803,"mean_unknown_gender_ratio":0.090211,"patents_with_female_inventors":7199,"patents_with_male_inventors":29415,"average_team_size":3.056281,"science_using_patents":11231,"average_originality":0.61002,"average_generality":0.471363,"average_forward_citations_5yr":0.783635,"average_forward_citations_7yr":1.657212,"female_inventor_patent_share":0.230996,"science_using_patent_share":0.360372},{"year":2018,"patent_count":30519,"mean_female_ratio":0.0856,"mean_male_ratio":0.819165,"mean_unknown_gender_ratio":0.095391,"patents_with_female_inventors":6996,"patents_with_male_inventors":28736,"average_team_size":3.059733,"science_using_patents":10953,"average_originality":0.60403,"average_generality":0.399237,"average_forward_citations_5yr":0.814575,"average_forward_citations_7yr":1.55241,"female_inventor_patent_share":0.229234,"science_using_patent_share":0.358891},{"year":2019,"patent_count":34939,"mean_female_ratio":0.089096,"mean_male_ratio":0.811968,"mean_unknown_gender_ratio":0.098924,"patents_with_female_inventors":8288,"patents_with_male_inventors":32725,"average_team_size":3.089985,"science_using_patents":12195,"average_originality":0.591895,"average_generality":0.321655,"average_forward_citations_5yr":0.700707,"average_forward_citations_7yr":1.123444,"female_inventor_patent_share":0.237213,"science_using_patent_share":0.349037},{"year":2020,"patent_count":33890,"mean_female_ratio":0.089836,"mean_male_ratio":0.802935,"mean_unknown_gender_ratio":0.107399,"patents_with_female_inventors":8197,"patents_with_male_inventors":31606,"average_team_size":3.137327,"science_using_patents":11985,"average_originality":0.590537,"average_generality":0.234017,"average_forward_citations_5yr":0.476837,"average_forward_citations_7yr":0.653821,"female_inventor_patent_share":0.241871,"science_using_patent_share":0.353644}],"science":[{"year":1976,"science_patent_count":425,"mean_female_science_share":0.016847,"mean_male_science_share":0.31567},{"year":1977,"science_patent_count":464,"mean_female_science_share":0.017936,"mean_male_science_share":0.358586},{"year":1978,"science_patent_count":536,"mean_female_science_share":0.01818,"mean_male_science_share":0.337436},{"year":1979,"science_patent_count":446,"mean_female_science_share":0.014549,"mean_male_science_share":0.373815},{"year":1980,"science_patent_count":551,"mean_female_science_share":0.02252,"mean_male_science_share":0.351382},{"year":1981,"science_patent_count":704,"mean_female_science_share":0.020113,"mean_male_science_share":0.33758},{"year":1982,"science_patent_count":716,"mean_female_science_share":0.034857,"mean_male_science_share":0.322824},{"year":1983,"science_patent_count":686,"mean_female_science_share":0.021885,"mean_male_science_share":0.329016},{"year":1984,"science_patent_count":710,"mean_female_science_share":0.022563,"mean_male_science_share":0.364358},{"year":1985,"science_patent_count":749,"mean_female_science_share":0.021329,"mean_male_science_share":0.334917},{"year":1986,"science_patent_count":702,"mean_female_science_share":0.018338,"mean_male_science_share":0.335556},{"year":1987,"science_patent_count":816,"mean_female_science_share":0.027757,"mean_male_science_share":0.354517},{"year":1988,"science_patent_count":800,"mean_female_science_share":0.027534,"mean_male_science_share":0.346597},{"year":1989,"science_patent_count":941,"mean_female_science_share":0.031394,"mean_male_science_share":0.37001},{"year":1990,"science_patent_count":885,"mean_female_science_share":0.030287,"mean_male_science_share":0.363362},{"year":1991,"science_patent_count":921,"mean_female_science_share":0.033888,"mean_male_science_share":0.363815},{"year":1992,"science_patent_count":1112,"mean_female_science_share":0.032272,"mean_male_science_share":0.391095},{"year":1993,"science_patent_count":1191,"mean_female_science_share":0.04291,"mean_male_science_share":0.394774},{"year":1994,"science_patent_count":1362,"mean_female_science_share":0.049754,"mean_male_science_share":0.379505},{"year":1995,"science_patent_count":1473,"mean_female_science_share":0.047775,"mean_male_science_share":0.395879},{"year":1996,"science_patent_count":1710,"mean_female_science_share":0.04574,"mean_male_science_share":0.39982},{"year":1997,"science_patent_count":1936,"mean_female_science_share":0.056841,"mean_male_science_share":0.431511},{"year":1998,"science_patent_count":2338,"mean_female_science_share":0.058831,"mean_male_science_share":0.422289},{"year":1999,"science_patent_count":2391,"mean_female_science_share":0.063836,"mean_male_science_share":0.422368},{"year":2000,"science_patent_count":2558,"mean_female_science_share":0.059995,"mean_male_science_share":0.421997},{"year":2001,"science_patent_count":2634,"mean_female_science_share":0.059756,"mean_male_science_share":0.428134},{"year":2002,"science_patent_count":2610,"mean_female_science_share":0.062648,"mean_male_science_share":0.43233},{"year":2003,"science_patent_count":2658,"mean_female_science_share":0.060011,"mean_male_science_share":0.431651},{"year":2004,"science_patent_count":2484,"mean_female_science_share":0.058358,"mean_male_science_share":0.431146},{"year":2005,"science_patent_count":2441,"mean_female_science_share":0.058488,"mean_male_science_share":0.44855},{"year":2006,"science_patent_count":3112,"mean_female_science_share":0.061973,"mean_male_science_share":0.448128},{"year":2007,"science_patent_count":2891,"mean_female_science_share":0.069101,"mean_male_science_share":0.462268},{"year":2008,"science_patent_count":2997,"mean_female_science_share":0.066674,"mean_male_science_share":0.455798},{"year":2009,"science_patent_count":3522,"mean_female_science_share":0.070473,"mean_male_science_share":0.449879},{"year":2010,"science_patent_count":4932,"mean_female_science_share":0.072812,"mean_male_science_share":0.455457},{"year":2011,"science_patent_count":5649,"mean_female_science_share":0.074817,"mean_male_science_share":0.455933},{"year":2012,"science_patent_count":6846,"mean_female_science_share":0.074366,"mean_male_science_share":0.454972},{"year":2013,"science_patent_count":7855,"mean_female_science_share":0.07795,"mean_male_science_share":0.459336},{"year":2014,"science_patent_count":9335,"mean_female_science_share":0.078133,"mean_male_science_share":0.458467},{"year":2015,"science_patent_count":10045,"mean_female_science_share":0.08008,"mean_male_science_share":0.451894},{"year":2016,"science_patent_count":10599,"mean_female_science_share":0.084701,"mean_male_science_share":0.446418},{"year":2017,"science_patent_count":11231,"mean_female_science_share":0.084492,"mean_male_science_share":0.445259},{"year":2018,"science_patent_count":10953,"mean_female_science_share":0.085878,"mean_male_science_share":0.444468},{"year":2019,"science_patent_count":12195,"mean_female_science_share":0.088936,"mean_male_science_share":0.447885},{"year":2020,"science_patent_count":11985,"mean_female_science_share":0.088464,"mean_male_science_share":0.438927}]};
+const P = D.patents, S = D.science;
+const years=P.map(d=>d.year);
+const pct=x=>x*100;
+const fmtPct=x=>(x*100).toFixed(1)+'%';
+const base={paper_bgcolor:'white',plot_bgcolor:'white',font:{family:'Inter, system-ui, sans-serif',color:'#314750',size:12},margin:{l:55,r:20,t:18,b:48},xaxis:{title:'Patent grant year',gridcolor:'#edf1f2'},yaxis:{gridcolor:'#edf1f2'},hovermode:'x unified',legend:{orientation:'h',y:-.22}};
+function line(id,series,yTitle,percent=false){
+ const traces=series.map(s=>({x:years,y:P.map(d=>d[s.key]*(percent?100:1)),name:s.name,type:'scatter',mode:'lines',line:{width:2.6},hovertemplate:'%{x}: %{y:.2f}<extra>'+s.name+'</extra>'}));
+ Plotly.newPlot(id,traces,{...base,yaxis:{...base.yaxis,title:yTitle,ticksuffix:percent?'%':''}},{responsive:true,displaylogo:false});
+}
+Plotly.newPlot('patentVolume',[{x:years,y:P.map(d=>d.patent_count),type:'bar',marker:{color:'#315F9B'},hovertemplate:'%{x}: %{y:,} patents<extra></extra>'}],{...base,yaxis:{...base.yaxis,title:'Number of patents'}},{responsive:true,displaylogo:false});
+line('femaleShare',[{key:'female_inventor_patent_share',name:'At least one female inventor'}],'Share of patents',true);
+line('scienceShare',[{key:'science_using_patent_share',name:'Uses science'}],'Share of patents',true);
+line('genderComposition',[{key:'mean_female_ratio',name:'Female inventor share'},{key:'mean_male_ratio',name:'Male inventor share'},{key:'mean_unknown_gender_ratio',name:'Unknown-gender share'}],'Mean inventor share',true);
+Plotly.newPlot('femaleCounts',[{x:years,y:P.map(d=>d.patents_with_female_inventors),name:'Patents with female inventors',type:'bar',marker:{color:'#b75d68'}}],{...base,yaxis:{...base.yaxis,title:'Number of patents'}},{responsive:true,displaylogo:false});
+Plotly.newPlot('scienceCount',[{x:years,y:S.map(d=>d.science_patent_count),name:'Science-using patents',type:'bar',marker:{color:'#457b9d'}}],{...base,yaxis:{...base.yaxis,title:'Number of patents'}},{responsive:true,displaylogo:false});
+const sb={...base,xaxis:{title:'Patent grant year',gridcolor:'#edf1f2'},yaxis:{title:'Mean share',gridcolor:'#edf1f2',ticksuffix:'%'}};
+Plotly.newPlot('scienceGender',[
+{x:years,y:S.map(d=>d.mean_female_science_share*100),name:'Female-authored science share',type:'scatter',mode:'lines',line:{width:2.6}},
+{x:years,y:S.map(d=>d.mean_male_science_share*100),name:'Male-authored science share',type:'scatter',mode:'lines',line:{width:2.6}}
+],{...sb},{responsive:true,displaylogo:false});
+line('teamSize',[{key:'average_team_size',name:'Average team size'}],'Mean team size');
+Plotly.newPlot('originality',[
+{x:years,y:P.map(d=>d.average_originality),name:'Originality',type:'scatter',mode:'lines',line:{width:2.5}},
+{x:years,y:P.map(d=>d.average_generality),name:'Generality',type:'scatter',mode:'lines',line:{width:2.5}}
+],{...base,yaxis:{...base.yaxis,title:'Mean indicator'}},{responsive:true,displaylogo:false});
+Plotly.newPlot('citations',[
+{x:years,y:P.map(d=>d.average_forward_citations_5yr),name:'5-year forward citations',type:'scatter',mode:'lines',line:{width:2.5}},
+{x:years,y:P.map(d=>d.average_forward_citations_7yr),name:'7-year forward citations',type:'scatter',mode:'lines',line:{width:2.5}}
+],{...base,yaxis:{...base.yaxis,title:'Mean forward citations'}},{responsive:true,displaylogo:false});
 
-  const chartData = [
-    {
-      x: years,
-      y: [3.5879, 24.1871],
-      name: "Patents with at least one female inventor",
-      type: "bar"
-    },
-    {
-      x: years,
-      y: [13.0328, 35.3644],
-      name: "Patents using scientific knowledge",
-      type: "bar"
-    },
-    {
-      x: years,
-      y: [1.6847, 8.8464],
-      name: "Female science share among science-using patents",
-      type: "bar"
-    }
-  ];
+const REG={
+ first:{n:400219,r2:'0.1861',coef:[
+ ['male_ratio',-0.3622,0.012,-29.327,0,-0.386,-0.338],['YearOfPatentGrant',0.0207,0.000,84.363,0,0.020,0.021],['team_size',0.0661,0.001,48.951,0,0.063,0.069],['Originality',0.4026,0.010,42.211,0,0.384,0.421],['CPC_4digit',0.0715,0.002,40.541,0,0.068,0.075],['human_necessities',0.7572,0.009,85.433,0,0.740,0.775],['Transporting',-0.3615,0.007,-53.710,0,-0.375,-0.348],['Chemistry',0.7051,0.007,104.590,0,0.692,0.718],['Textiles',-0.2350,0.027,-8.826,0,-0.287,-0.183],['Constructions',-0.4303,0.017,-25.369,0,-0.464,-0.397],['Mechanical_engineering',-0.6048,0.008,-75.506,0,-0.620,-0.589],['Physics',0.1157,0.007,16.611,0,0.102,0.129],['Electricity',-0.1431,0.007,-21.699,0,-0.156,-0.130]],
+ me:[['male_ratio',-0.0843,0.003,-29.405,0,-0.090,-0.079],['YearOfPatentGrant',0.0048,0.000056,85.702,0,0.005,0.005],['team_size',0.0154,0.000,49.291,0,0.015,0.016],['Originality',0.0937,0.002,42.431,0,0.089,0.098],['CPC_4digit',0.0166,0.000,40.718,0,0.016,0.017],['human_necessities',0.1762,0.002,87.858,0,0.172,0.180],['Transporting',-0.0841,0.002,-54.094,0,-0.087,-0.081],['Chemistry',0.1641,0.002,108.263,0,0.161,0.167],['Textiles',-0.0547,0.006,-8.827,0,-0.067,-0.043],['Constructions',-0.1002,0.004,-25.403,0,-0.108,-0.092],['Mechanical_engineering',-0.1408,0.002,-76.313,0,-0.144,-0.137],['Physics',0.0269,0.002,16.623,0,0.024,0.030],['Electricity',-0.0333,0.002,-21.719,0,-0.036,-0.030]]},
+ second:{n:83352,r2:'0.1805',coef:[
+ ['male_ratio',-0.2919,0.033,-8.822,0,-0.357,-0.227],['YearOfPatentGrant',0.0326,0.001,25.045,0,0.030,0.035],['team_size',0.0024,0.005,0.511,0.609,-0.007,0.011],['Originality',-0.0083,0.030,-0.273,0.785,-0.068,0.051],['CPC_4digit',0.0011,0.005,0.210,0.834,-0.009,0.011],['IMR',-2.1905,0.357,-6.133,0,-2.891,-1.490],['human_necessities',0.6744,0.051,13.330,0,0.575,0.774],['Transporting',-0.0948,0.025,-3.754,0,-0.144,-0.045],['Chemistry',0.2037,0.046,4.466,0,0.114,0.293],['Textiles',0.0666,0.052,1.275,0.202,-0.036,0.169],['Constructions',-0.0532,0.043,-1.228,0.219,-0.138,0.032],['Mechanical_engineering',-0.2713,0.036,-7.438,0,-0.343,-0.200],['Physics',-0.1543,0.015,-10.584,0,-0.183,-0.126],['Electricity',-0.0780,0.016,-4.962,0,-0.109,-0.047]],
+ me:[['male_ratio',-0.0909,0.010,-8.830,0,-0.111,-0.071],['YearOfPatentGrant',0.0101,0.000,25.285,0,0.009,0.011],['team_size',0.0007,0.001,0.511,0.609,-0.002,0.004],['Originality',-0.0026,0.009,-0.273,0.785,-0.021,0.016],['CPC_4digit',0.0003,0.002,0.210,0.834,-0.003,0.004],['IMR',-0.6821,0.111,-6.139,0,-0.900,-0.464],['human_necessities',0.2100,0.016,13.353,0,0.179,0.241],['Transporting',-0.0295,0.008,-3.754,0,-0.045,-0.014],['Chemistry',0.0634,0.014,4.467,0,0.036,0.091],['Textiles',0.0208,0.016,1.275,0.202,-0.011,0.053],['Constructions',-0.0166,0.013,-1.228,0.219,-0.043,0.010],['Mechanical_engineering',-0.0845,0.011,-7.443,0,-0.107,-0.062],['Physics',-0.0480,0.005,-10.608,0,-0.057,-0.039],['Electricity',-0.0243,0.005,-4.963,0,-0.034,-0.015]]}
+};
+function renderRegression(){const stage=document.getElementById('regStage').value, metric=document.getElementById('regMetric').value, m=REG[stage];document.getElementById('regN').textContent=m.n.toLocaleString();document.getElementById('regR2').textContent=m.r2;const rows=m[metric];const names=rows.map(r=>r[0]), est=rows.map(r=>r[1]), low=rows.map(r=>r[1]-r[5]), high=rows.map(r=>r[6]-r[1]);
+ Plotly.react('regChart',[{type:'scatter',mode:'markers',x:est,y:names,error_x:{type:'data',symmetric:false,array:high,arrayminus:low,thickness:1.5,width:4},marker:{size:9,color:'#315F9B'},hovertemplate:'%{y}<br>Estimate: %{x:.4f}<extra></extra>'}],{paper_bgcolor:'white',plot_bgcolor:'white',font:{family:'Inter, system-ui, sans-serif',color:'#314750',size:12},margin:{l:190,r:25,t:20,b:55},xaxis:{title:metric==='coef'?'Probit coefficient':'Average marginal effect (dy/dx)',zeroline:true,zerolinecolor:'#87979d',gridcolor:'#edf1f2'},yaxis:{autorange:'reversed',gridcolor:'#edf1f2'},showlegend:false},{responsive:true,displaylogo:false});
+ document.getElementById('regRows').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].toFixed(4)}</td><td>${r[2].toFixed(4)}</td><td>${r[4]<0.001?' <0.001':r[4].toFixed(3)}</td><td>[${r[5].toFixed(3)}, ${r[6].toFixed(3)}]</td></tr>`).join('');}
+document.getElementById('regStage').addEventListener('change',renderRegression);document.getElementById('regMetric').addEventListener('change',renderRegression);renderRegression();
 
-  const layout = {
-    title: {
-      text: "Selected indicators: 1976 and 2020",
-      font: { size: 18 }
-    },
-    barmode: "group",
-    yaxis: {
-      title: "Percentage (%)",
-      rangemode: "tozero"
-    },
-    xaxis: {
-      title: "Year"
-    },
-    legend: {
-      orientation: "h",
-      y: -0.28
-    },
-    margin: {
-      l: 60,
-      r: 25,
-      t: 65,
-      b: 115
-    },
-    paper_bgcolor: "#ffffff",
-    plot_bgcolor: "#ffffff"
-  };
-
-  Plotly.newPlot(
-    "trendChart",
-    chartData,
-    layout,
-    {
-      responsive: true,
-      displayModeBar: true
-    }
-  );
+const metric=document.getElementById('metric'), rows=document.getElementById('dataRows'), head=document.getElementById('metricHead');
+function renderTable(){const k=metric.value;head.textContent=metric.options[metric.selectedIndex].text;rows.innerHTML=P.map(d=>`<tr><td>${d.year}</td><td>${k.includes('share')||k.includes('ratio')?(d[k]*100).toFixed(2)+'%':typeof d[k]==='number'?d[k].toLocaleString('en-US',{maximumFractionDigits:3}):d[k]}</td></tr>`).join('');}
+metric.addEventListener('change',renderTable);renderTable();
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));
+ document.querySelectorAll('.tabcontent').forEach(x=>x.classList.toggle('hidden',x.id!==b.dataset.tab));
+ setTimeout(()=>document.querySelectorAll('.tabcontent:not(.hidden) .js-plotly-plot').forEach(x=>Plotly.Plots.resize(x)),60);
+}));
 </script>
-
-</body>
-</html>
+</body></html>
