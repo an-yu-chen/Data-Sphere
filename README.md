@@ -38,9 +38,7 @@ The first-stage estimation covers **400,219 observations**, with a pseudo-$R^2$ 
 Conditional on selection into the sample, the second-stage model examines the probability that a patent draws on female-authored scientific knowledge:
 
 $$
-P(F_i=1\mid Z_i,S_i=1)
-=
-\Phi\left(Z_i'\gamma+\delta\widehat{\lambda}_i\right)
+P(F_i=1\mid Z_i,S_i=1)=\Phi\left(Z_i'\gamma+\delta\widehat{\lambda}_i\right)
 $$
 
 Here, $F_i$ denotes whether the patent has a positive female scientific knowledge share, $Z_i$ represents the explanatory variables, and $\widehat{\lambda}_i$ is the inverse Mills ratio estimated from the selection equation.
