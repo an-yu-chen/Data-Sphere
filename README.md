@@ -5,6 +5,13 @@
 
 Innovation relies on diverse knowledge, inclusive collaboration and the exchange of ideas across individuals and disciplines (Bercovitz & Feldman, 2011; van Rijnsoever et al., 2015; Wagner et al., 2019). This study draws on a dataset of **466,310 green patents granted between 1976 and 2020**, linked to information on scientific publications cited by patents. It finds that patent teams with greater male representation are significantly more likely to cite scientific publications authored by men, whereas the presence of female inventors is associated with increased citations to publications authored by women. Nevertheless, the underrepresentation of female inventors in the green industrial sector examined points to persistent gender inequalities in technological innovation. These findings highlight the importance of gender diversity in shaping knowledge exchange and technological development.
 
+## Research data and computational tools
+
+The primary patent data are obtained from PatentsView, which provides U.S. patent records and disambiguated inventor information. Inventor gender is classified using the World Gender-Name Dictionary (WGND) 2.0, developed by the World Intellectual Property Organization (WIPO). The identification of green technological inventions follows the CPC Y02/Y04S classification scheme. To establish the scientific knowledge base underlying these inventions, patent-to-publication citation records are obtained from Marx and Fuegi (2020, 2022). These records are supplemented with SciSciNet (Lin et al., 2023), which provides publication-level and author-level information.
+
+Data processing, descriptive statistical analysis and econometric modelling are conducted using Python, complemented by R. Python libraries, including Pandas and NumPy, are used for data preparation, manipulation and descriptive statistics. Statsmodels and SciPy support Probit estimation, marginal effects and related statistical procedures. Interactive research visualisations are developed using HTML, CSS and JavaScript, alongside with Git and GitHub support version control, code management and the dissemination of research materials, subject to applicable data-sharing restrictions.
+
+## Analysis
 ## A. Green innovation over time
 
 The interactive time-series visualisations examine the evolution of green patenting between 1976 and 2020, focusing on annual changes in the number of green patents, the share of patents involving at least one female inventor, trends in the use of scientific knowledge, and changes in inventor team size and selected patent characteristics.
