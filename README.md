@@ -1,315 +1,92 @@
 
-# Gender, Scientific Knowledge and Green Innovation
-## Interactive Research Visualisations and Knowledge Network Analysis
+# Gender Diversity and Scientific Knowledge Sourcing in Green Innovation
 
-An interactive research project exploring gender representation, scientific knowledge sourcing and innovation characteristics across 466,310 green patents from 1976 to 2020.
+## Research overview
 
-The project combines descriptive data visualisation, Python-based data processing and network analysis to explore how scientific knowledge connects to technological innovation.
+Innovation relies on diverse knowledge, inclusive collaboration and the exchange of ideas across individuals and disciplines (Bercovitz & Feldman, 2011; van Rijnsoever et al., 2015; Wagner et al., 2019). This study draws on a dataset of **466,310 green patents granted between 1976 and 2020**, linked to information on scientific publications cited by patents. It finds that patent teams with greater male representation are significantly more likely to cite scientific publications authored by men, whereas the presence of female inventors is associated with increased citations to publications authored by women. Nevertheless, the underrepresentation of female inventors in the green industrial sector examined points to persistent gender inequalities in technological innovation. These findings highlight the importance of gender diversity in shaping knowledge exchange and technological development.
 
-## Research objectives
+## A. Green innovation over time
 
-- Explore the evolution of green patenting over time.
-- Examine gender representation among patent inventors.
-- Investigate the relationship between scientific publications and green technological innovation.
-- Explore knowledge connections between patents and scientific publications.
-- Demonstrate reproducible data processing and analytical workflows.
+The interactive time-series visualisations examine the evolution of green patenting between 1976 and 2020, focusing on annual changes in the number of green patents, the share of patents involving at least one female inventor, trends in the use of scientific knowledge, and changes in inventor team size and selected patent characteristics.
 
-## Project structure
+The descriptive findings show that the share of green patents with at least one female inventor increased from approximately **3.6% in 1976 to 24.2% in 2020**. Over the same period, the share of green patents citing scientific publications increased from approximately **13.0% to 35.4%**. These trends provide an overview of the evolution of gender representation and scientific knowledge use in green technological innovation.
 
-```text
-green-innovation-research/
-│
-├── README.md
-├── index.html
-├── script.js
-└── style.css
-```
+## B. Gender representation in green invention
 
-## Interactive research visualisations
+The interactive visualisations further explore gender representation in green invention by comparing female, male and unknown-gender inventor participation. They examine the proportion of female inventors within patent teams, the share of patents involving at least one female inventor, changes in inventor team composition over time, and differences in gender representation across technological fields.
 
-The website is organised around four analytical themes.
+These comparisons provide insights into the evolution of women's participation in green technological innovation and highlight variations in gender representation across technological domains. Importantly, the visualisations present descriptive patterns rather than causal relationships, offering an empirical overview of gender representation in green patenting over time.
 
-### 1. Green innovation trends
+## C. Econometric analysis
 
-Annual patenting activity between 1976 and 2020, including:
-- Patent counts
-- Changes in inventor team size
-- Science-using patent shares
+To complement the descriptive analysis, the project incorporates an econometric investigation of the relationship between inventor gender composition and the gender characteristics of the scientific knowledge cited by green patents. A two-stage Probit specification is employed to examine potential sample selection associated with the availability of scientific-publication gender information and the subsequent likelihood of patents drawing on female-authored scientific knowledge.
 
-### 2. Gender and innovation
+### First-stage selection equation
 
-Descriptive exploration of:
-- Female inventor representation
-- Male inventor representation
-- Unknown-gender representation
-- Patents with at least one female inventor
+The first stage estimates the probability that a patent has identifiable scientific-publication gender information:
 
-### 3. Scientific knowledge sourcing
+$$
+P(S_i=1\mid X_i)=\Phi(X_i'\beta)
+$$
 
-Exploration of:
-- Patents linked to scientific publications
-- Female-authored scientific knowledge shares
-- Male-authored scientific knowledge shares
-- Changes in science–technology connections over time
+Here, $S_i$ denotes the availability of known scientific-publication gender information, while $\Phi$ represents the standard normal cumulative distribution function. The explanatory-variable vector $X_i$ incorporates male inventor share, patent grant year, inventor team size, patent originality, CPC classification count and technological-field indicators.
 
-### 4. Knowledge network analysis
+The first-stage estimation covers **400,219 observations**, with a pseudo-$R^2$ of **0.1861**.
 
-The project can represent patent–publication relationships as a bipartite network.
+### Second-stage outcome equation
 
-In this structure:
-- Patent nodes represent technological inventions.
-- Publication nodes represent scientific knowledge sources.
-- Edges represent observed patent–publication relationships.
+Conditional on selection into the sample, the second-stage model examines the probability that a patent draws on female-authored scientific knowledge:
 
-Potential network indicators include:
-- Degree centrality
-- Weighted degree
-- Network density
-- Connected components
-- Community structure
-- Knowledge-source concentration
+$$
+P(F_i=1\mid Z_i,S_i=1)
+=
+\Phi(Z_i'\gamma+\delta\widehat{\lambda}_i)
+$$
 
-These indicators should be calculated from the actual edge list before being interpreted as empirical findings.
+Here, $F_i$ denotes whether the patent has a positive female scientific knowledge share, $Z_i$ represents the explanatory variables, and $\widehat{\lambda}_i$ is the inverse Mills ratio estimated from the selection equation.
 
-An inventor co-invention network could also be developed if inventor-level identifiers and collaboration links are available.
+The second-stage estimation comprises **83,352 observations** and produces a pseudo-$R^2$ of **0.1805**.
 
-## Data and analytical workflow
+The estimates reveal a negative and statistically significant association between the inverse Mills ratio and the female-science indicator (coefficient = **−2.1905**, $p < 0.001$). Male inventor share is likewise negatively associated with the outcome (coefficient = **−0.2919**, $p < 0.001$), while patent grant year exhibits a positive and statistically significant association (coefficient = **0.0326**, $p < 0.001$). The coefficients for inventor team size, patent originality and CPC classification count are not statistically significant at conventional levels.
 
-The research dataset contains 466,310 patent observations covering 1976–2020.
+The interactive presentation enables users to explore coefficient estimates, confidence intervals, marginal effects, sample sizes and model specifications. This facilitates examination of the estimated relationships and provides greater transparency regarding the empirical specification and its results.
 
-The annual visualisations use descriptive aggregates prepared from the patent-level dataset.
+### Econometric interpretation and methodological considerations
 
-The network analysis requires a patent–publication edge list derived from the patent–paper linkage data.
+The findings should be interpreted as conditional associations rather than causal effects. The estimates are presented as results from the specified two-stage procedure. However, interpreting this procedure as a formally corrected sample-selection model requires further econometric validation, particularly concerning the identification strategy, exclusion restrictions and inference procedure.
 
-### Expected CSV files
+In particular, conventional second-stage Probit standard errors do not automatically account for the uncertainty associated with the generated inverse Mills ratio. Accordingly, the interactive presentation identifies these estimates as results from the two-stage specification and avoids overstating their inferential or causal implications.
 
-The website accepts three CSV files:
+## References
 
-**1. `yearly_patent_indicators.csv`**
+Bercovitz, J., & Feldman, M. (2011). The mechanisms of collaboration in inventive teams: Composition, social networks, and geography. *Research Policy, 40*(1), 81–93.
 
-Expected columns:
+Chen, A. Y. (2026). *The contribution of scientific knowledge to green technology development: Three essays.* Doctoral dissertation, The University of Manchester. [University of Manchester Research Explorer](https://research.manchester.ac.uk/en/studentTheses/the-contribution-of-scientific-knowledge-to-green-technology-deve/).
 
-```text
-YearOfPatentGrant
-patent_count
-mean_female_ratio
-mean_male_ratio
-mean_unknown_gender_ratio
-patents_with_female_inventors
-patents_with_male_inventors
-average_team_size
-science_using_patents
-average_originality
-average_generality
-average_forward_citations_5yr
-average_forward_citations_7yr
-female_inventor_patent_share
-science_using_patent_share
-```
+Hall, B. H., Jaffe, A. B., & Trajtenberg, M. (2001). *The NBER patent citation data file: Lessons, insights and methodological tools* (NBER Working Paper No. 8498). National Bureau of Economic Research.
 
-**2. `yearly_science_indicators.csv`**
+Heckman, J. J. (1979). Sample selection bias as a specification error. *Econometrica, 47*(1), 153–161. https://doi.org/10.2307/1912352
 
-Expected columns:
+Lax-Martinez, G., Raffo, J. D., & Saito, K. (2016). Identifying the gender of PCT inventors. *World Intellectual Property Organization (WIPO) Economic Research Working Paper Series*, (33).
 
-```text
-YearOfPatentGrant
-science_patent_count
-mean_female_science_share
-mean_male_science_share
-```
+Lin, Z., Yin, Y., Liu, L., & Wang, D. (2023). SciSciNet: A large-scale open data lake for the science of science research. *Scientific Data, 10*(1), 315.
 
-**3. `patent_paper_edges.csv`**
+Martinez, G. L., Raffo, J., & Saito, K. (2016). *Identifying the gender of PCT inventors* (Vol. 33). WIPO.
 
-Expected columns:
+Marx, M., & Fuegi, A. (2020). Reliance on science: Worldwide front-page patent citations to scientific articles. *Strategic Management Journal, 41*(9), 1572–1594.
 
-```text
-source
-target
-weight
-```
+Marx, M., & Fuegi, A. (2022). Reliance on science by inventors: Hybrid extraction of in-text patent-to-article citations. *Journal of Economics & Management Strategy, 31*(2), 369–392.
 
-Here, `source` is a patent identifier and `target` is a scientific publication identifier. `weight` is optional and should reflect a documented linkage measure.
-
-The website does not contain the original patent-level dataset.
+Meng, Y. (2016). Collaboration patterns and patenting: Exploring gender distinctions. *Research Policy, 45*(1), 56–67.
 
-## Python methods and reproducibility
+Squicciarini, M., Dernis, H., & Criscuolo, C. (2013). *Measuring patent quality: Indicators of technological and economic value* (OECD Science, Technology and Industry Working Papers, No. 2013/03). OECD Publishing.
 
-The analytical workflow is designed around Python, Pandas and NetworkX.
+Trajtenberg, M., Henderson, R., & Jaffe, A. (1997). University versus corporate patents: A window on the basicness of invention. *Economics of Innovation and New Technology, 5*(1), 19–50.
 
-### Step 1: Data preparation
+United States Patent and Trademark Office. (n.d.). *PatentsView*. https://data.uspto.gov/support/transition-guide/patentsview
 
-```python
-import pandas as pd
+van Buskirk, I., Clauset, A., & Larremore, D. B. (2023, June). An open-source cultural consensus approach to name-based gender classification. In *Proceedings of the International AAAI Conference on Web and Social Media* (Vol. 17, pp. 866–877).
 
-patents = pd.read_csv(
-    "genderpatent_with_gender_ratios.csv",
-    dtype={"patent_id": str}
-)
+van Rijnsoever, F. J., van den Berg, J., Koch, J., & Hekkert, M. P. (2015). Smart innovation policy: How network position and project composition affect the diversity of an emerging technology. *Research Policy, 44*(5), 1094–1107.
 
-print(patents.shape)
-print(patents.info())
-```
-
-### Step 2: Annual indicators
-
-```python
-yearly = (
-    patents.groupby("YearOfPatentGrant")
-    .agg(
-        patent_count=("patent_id", "count"),
-        mean_female_ratio=("female_ratio", "mean"),
-        mean_male_ratio=("male_ratio", "mean"),
-        average_team_size=("team_size", "mean"),
-        science_using_patents=("Uses_Science", "sum")
-    )
-    .reset_index()
-)
-
-yearly["female_inventor_patent_share"] = (
-    patents.assign(
-        has_female=patents["female_ratio"] > 0
-    )
-    .groupby("YearOfPatentGrant")["has_female"]
-    .mean()
-    .values
-)
-```
-
-### Step 3: Constructing a patent–publication network
-
-The patent–paper linkage data can be used to construct a bipartite network.
-
-```python
-import pandas as pd
-import networkx as nx
-
-links = pd.read_stata("_patent_paper_pairs.dta")
-
-edges = links[["patent", "paperid"]].drop_duplicates()
-
-edges = edges.rename(columns={
-    "patent": "source",
-    "paperid": "target"
-})
-
-edges["weight"] = 1
-
-edges.to_csv(
-    "patent_paper_edges.csv",
-    index=False
-)
-```
-
-### Step 4: Network analysis
-
-```python
-import networkx as nx
-import pandas as pd
-
-edges = pd.read_csv("patent_paper_edges.csv")
-
-G = nx.Graph()
-
-for _, row in edges.iterrows():
-    G.add_node(row["source"], bipartite="patent")
-    G.add_node(row["target"], bipartite="publication")
-    G.add_edge(
-        row["source"],
-        row["target"],
-        weight=row["weight"]
-    )
-
-degree = dict(G.degree())
-weighted_degree = dict(G.degree(weight="weight"))
-
-network_summary = pd.DataFrame({
-    "node": list(G.nodes()),
-    "degree": [degree[n] for n in G.nodes()],
-    "weighted_degree": [
-        weighted_degree[n] for n in G.nodes()
-    ]
-})
-```
-
-This is a starting point. Before calculating network statistics, identifiers must be normalised and patent and publication node namespaces must be kept separate.
-
-A projected patent–patent network can be constructed by connecting patents that cite or share scientific publications. The projection should be documented because it changes the interpretation of network relationships.
-
-## Data architecture
-
-The proposed architecture separates data sources, processing, analytical outputs and visual presentation.
-
-```text
-SOURCE DATA
-    |
-    |-- Patent-level dataset
-    |
-    |-- Patent–publication linkage data
-    |
-    v
-DATA PREPARATION
-    |
-    |-- Data validation
-    |-- Identifier standardisation
-    |-- Missing-value checks
-    |-- Variable construction
-    |
-    v
-ANALYTICAL LAYER
-    |
-    |-- Annual descriptive indicators
-    |-- Gender indicators
-    |-- Science-sourcing indicators
-    |-- Patent–publication network
-    |
-    v
-OUTPUT DATA
-    |
-    |-- yearly_patent_indicators.csv
-    |-- yearly_science_indicators.csv
-    |-- patent_paper_edges.csv
-    |
-    v
-INTERACTIVE PRESENTATION
-    |
-    |-- Trend visualisations
-    |-- Gender comparisons
-    |-- Science–technology relationships
-    |-- Network exploration
-```
-
-## Tools and technologies
-
-- Python
-- Pandas
-- NumPy
-- NetworkX
-- Plotly.js
-- JavaScript
-- HTML5 and CSS3
-- Git and GitHub
-
-## Methodological note
-
-The annual charts are descriptive and should not be interpreted as causal estimates.
-
-Network indicators depend on the definition of nodes, edges, weights and network boundaries. The patent–publication network represents knowledge relationships, not necessarily direct social interaction between individuals.
-
-The interactive website is a presentation layer. Statistical modelling and network construction should be conducted and documented in Python.
-
-## Research integrity
-
-The project should be shared in accordance with the authors' permissions, data licences and any applicable confidentiality requirements.
-
-No confidential source data should be uploaded to the public repository without explicit authorisation.
-
-## Future development
-
-Potential extensions include:
-
-- Inventor co-invention networks
-- Community detection
-- Patent–publication network projections
-- Temporal network analysis
-- Firm-level knowledge networks
-- Additional interactive filters and analytical comparisons
+Wagner, C. S., Whetsell, T. A., & Mukherjee, S. (2019). International research collaboration: Novelty, conventionality, and atypicality in knowledge recombination. *Research Policy, 48*(5), 1260–1270.
