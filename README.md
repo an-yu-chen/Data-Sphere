@@ -12,6 +12,55 @@ The primary patent data are obtained from PatentsView, which provides U.S. paten
 Data processing, descriptive statistical analysis and econometric modelling are conducted using Python, complemented by R. Python libraries, including Pandas and NumPy, are used for data preparation, manipulation and descriptive statistics. Statsmodels and SciPy support Probit estimation, marginal effects and related statistical procedures. Interactive research visualisations are developed using HTML, CSS and JavaScript, alongside with Git and GitHub support version control, code management and the dissemination of research materials, subject to applicable data-sharing restrictions.
 
 ## Analysis
+## Analytical Workflow 
+
+The following workflow illustrates the analytical structure implemented in the Python script, covering data preparation, descriptive indicators, gender representation, scientific knowledge sourcing, econometric modelling and results generation.
+
+```mermaid
+flowchart TD
+
+    A(["GREEN INNOVATION ANALYSIS<br/>Python analytical framework<br/>1976–2020"]):::start
+
+    A --> B["01. IMPORT LIBRARIES<br/>Pandas · NumPy<br/>Statsmodels · SciPy"]
+
+    B --> C["02. LOAD AND PREPARE DATA<br/>Import patent dataset<br/>Inspect and prepare variables"]
+
+    C --> D["03. ANNUAL DESCRIPTIVE INDICATORS<br/>Annual patent counts<br/>Female inventor share<br/>Scientific knowledge use<br/>Average team size"]
+
+    C --> E["04. GENDER REPRESENTATION<br/>Female inventor share<br/>Male inventor share<br/>Unknown-gender representation<br/>Team composition and CPC fields"]
+
+    C --> F["05. SCIENTIFIC KNOWLEDGE SOURCING<br/>Scientific publication use<br/>Female-authored science share<br/>Male-authored science share<br/>Unknown-gender science share"]
+
+    D --> G["06. FIRST-STAGE PROBIT MODEL<br/>Selection into known scientific<br/>publication gender information"]
+    
+    E --> G
+    F --> G
+
+    G --> H["07. SECOND-STAGE PROBIT MODEL<br/>Presence of female-authored<br/>scientific knowledge<br/>Inverse Mills ratio"]
+
+    H --> I["08. RESULTS AND STATISTICAL ANALYSIS<br/>Coefficient estimates<br/>Standard errors and confidence intervals<br/>Statistical significance<br/>Marginal effects and pseudo-R²"]
+
+    D --> J["09. EXPORT DESCRIPTIVE RESULTS"]
+    I --> K["EXPORT ECONOMETRIC RESULTS"]
+
+    J --> L(["ANALYTICAL OUTPUTS"]):::result
+    K --> L
+
+    classDef start fill:#17365D,color:#FFFFFF,stroke:#17365D,stroke-width:2px;
+    classDef process fill:#E8F1FB,color:#17365D,stroke:#4779A8,stroke-width:1.5px;
+    classDef analysis fill:#E8F4EF,color:#205C43,stroke:#57977A,stroke-width:1.5px;
+    classDef econometric fill:#FFF1DE,color:#80521C,stroke:#D49A40,stroke-width:1.5px;
+    classDef result fill:#EDE8F8,color:#513A80,stroke:#8972B5,stroke-width:2px;
+
+    class A start;
+    class B,C process;
+    class D,E,F analysis;
+    class G,H,I econometric;
+    class J,K,L result;
+```
+
+
+
 ## A. Green innovation over time
 
 The interactive time-series visualisations examine the evolution of green patenting between 1976 and 2020, focusing on annual changes in the number of green patents, the share of patents involving at least one female inventor, trends in the use of scientific knowledge, and changes in inventor team size and selected patent characteristics.
